@@ -1,0 +1,658 @@
+
+%\usepackage[extreme]{savetrees}
+
+\usepackage[a4paper]{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+\usepgfplotslibrary{colorbrewer}
+\pgfplotsset{cycle list/Blues-9}
+
+\usepackage{parskip} %swap indentation to spacing
+
+
+\usepackage[justification=centering]{caption}
+\usepackage{subcaption}
+
+
+
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{perpage}
+\usepackage{smartdiagram}
+\usepackage{cancel}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{longtable}
+%\usepackage{minted}
+\usepackage{listings}
+\usepackage{courier}
+\usepackage{fancybox}
+
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+\usepackage{hhline}
+
+\usepackage{bm}
+\usepackage{siunitx}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\usepackage{polynom}
+
+\usepackage{tabularray}
+
+\usepackage{verbatim}
+
+\usepackage{array}
+\usepackage{ulem}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage[pagebackref=true]{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black, %choose some color if you want links to stand out
+}
+
+\addto\extrasenglish{% comment out if you want autorefs to say "subsection" instead of using the symbol
+    \def\chapterautorefname{\S\!}
+    \def\sectionautorefname{\S\!}
+    \def\subsectionautorefname{\S\!}
+    \def\subsubsectionautorefname{\S\!}
+}
+
+\usepackage{cleveref}
+
+
+\crefformat{chapter}{\S#2#1#3}
+\crefmultiformat{chapter}{\S\S#2#1#3}{ and~#2#1#3}{, #2#1#3}{, and~#2#1#3}
+
+\crefformat{section}{\S#2#1#3}
+\crefmultiformat{section}{\S\S#2#1#3}{ and~#2#1#3}{, #2#1#3}{, and~#2#1#3}
+
+
+\usepackage[explicit]{titlesec}
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries}{\chaptertitlename\ {\fontfamily{cmr}\selectfont\thechapter}}{20pt}{\hyperlink{chap-\thechapter}{\Huge#1}
+\addtocontents{toc}{\protect\hypertarget{chap-\thechapter}{}}}
+\titleformat{name=\chapter,numberless}
+    {\normalfont\huge\bfseries}{}{-20pt}{\Huge#1}
+\titleformat{\section}
+    {\normalfont\Large\bfseries}{\thesection}{1em}{\hyperlink{sec-\thesection}{#1}
+\addtocontents{toc}{\protect\hypertarget{sec-\thesection}{}}}
+\titleformat{name=\section,numberless}
+    {\normalfont\Large\bfseries}{}{0pt}{#1}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries}{\thesubsection}{1em}{\hyperlink{subsec-\thesubsection}{#1}
+\addtocontents{toc}{\protect\hypertarget{subsec-\thesubsection}{}}}
+\titleformat{name=\subsection,numberless}
+    {\normalfont\large\bfseries}{\thesubsection}{0pt}{#1}
+
+\titleformat{\subsubsection}
+    {\normalfont\bfseries}{\thesubsubsection}{1em}{\hyperlink{subsubsec-\thesubsubsection}{#1}
+\addtocontents{toc}{\protect\hypertarget{subsubsec-\thesubsubsection}{}}}
+\titleformat{name=\subsubsection,numberless}
+    {\normalfont\bfseries}{\thesubsubsection}{0pt}{#1}
+
+
+\usepackage{xparse}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning}
+\usetikzlibrary{intersections}
+\usetikzlibrary{calligraphy}
+\usetikzlibrary{patterns}
+\usepgflibrary{shadings}
+
+
+\tikzset{
+  show curve controls/.style={
+    decoration={
+      show path construction,
+      curveto code={
+        \draw[#1!50]
+        (\tikzinputsegmentfirst)
+        -- (\tikzinputsegmentsupporta)
+        -- (\tikzinputsegmentsupportb)
+        -- (\tikzinputsegmentlast)
+        ;
+        \fill[#1!50] (\tikzinputsegmentsupporta) circle(1pt);
+        \fill[#1!50] (\tikzinputsegmentsupportb) circle(1pt);
+        \draw[#1,line width=1pt]
+        (\tikzinputsegmentfirst)
+        .. controls (\tikzinputsegmentsupporta)
+                and (\tikzinputsegmentsupportb) ..
+        (\tikzinputsegmentlast);
+      }
+    },decorate
+  }
+}
+
+\usepackage{tikz-cd}
+\usepackage{quiver}
+
+\tikzset{Arrow Style/.style={text=black, font=\boldmath}}
+
+\newcommand{\tikzmark}[1]{%
+    \tikz[overlay, remember picture, baseline] \node (#1) {};%
+}
+
+\NewDocumentCommand{\DrawArrow}{s O{} m m m}{%
+    \begin{tikzpicture}[overlay,remember picture]
+        \draw[->, thick, Arrow Style, #2] 
+                ($(#3.west)+(\XShift,\YShift)$) -- 
+                ($(#4.east)+(-\XShift,\YShift)$)
+        node [midway,above] {#5};
+    \end{tikzpicture}%
+}
+
+
+
+\newcommand\eqset{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily set}}}{=}}}
+\newcommand\eqdef{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
+\newcommand\eqquest{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily ?}}}{=}}}
+
+\newcommand{\triangleleftneq}{\mkern-1mu\mathrel{\ooalign{\adjustbox{scale={1}{0.575}, raise={0.475ex}}{\hspace*{0.55em}$\mid$}\cr$\lneq$\cr}\mkern-1mu}}
+\newcommand{\trianglerightneq}{\mkern-1mu\mathrel{\ooalign{\adjustbox{scale={1}{0.575}, raise={0.475ex}}{\hspace*{-0.05em}$\mid$}\cr$\gneq$\cr}\mkern-1mu}}
+
+
+\newcommand{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}
+\newcommand{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}
+
+
+\newcommand{\image}{\operatorname{im}}
+\newcommand{\nullity}{\operatorname{null}}
+\newcommand{\rank}{\operatorname{rank}}
+
+\newcommand{\proj}{\operatorname{proj}}
+\newcommand{\coker}{\operatorname{coker}}
+
+\newcommand{\type}{\operatorname{type}}
+
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\Alt}{\operatorname{Alt}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Orb}{\operatorname{Orb}}
+\newcommand{\Stab}{\operatorname{Stab}}
+\newcommand{\Conj}{\operatorname{Cl}}
+\newcommand{\fix}{\operatorname{fix}}
+\newcommand{\Syl}{\operatorname{Syl}}
+\newcommand{\lcm}{\operatorname{lcm}}
+
+
+
+\makeatletter
+\newcommand{\pgfplotsdrawaxis}{\pgfplots@draw@axis}
+\makeatother
+\pgfplotsset{only axis on top/.style={axis on top=false, after end axis/.code={
+             \pgfplotsset{axis line style=opaque, ticklabel style=opaque, tick style=opaque,
+                          grid=none}\pgfplotsdrawaxis}}}
+
+                          
+\newcommand{\drawle}{-- (rel axis cs:1,0) -- (rel axis cs:1,1) -- (rel axis cs:0,1) \closedcycle}
+\newcommand{\drawge}{-- (rel axis cs:1,1) -- (rel axis cs:1,0) -- (rel axis cs:0,0) \closedcycle}
+
+
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
+\newcommand*{\XShift}{0.5em}
+\newcommand*{\YShift}{0.5ex}
+\definecolor{GraphRed}{HTML}{ff0000}
+\definecolor{GraphBlue}{HTML}{00b0f0}
+\definecolor{GraphPink}{HTML}{fa23ff}
+\definecolor{GraphGreen}{HTML}{00b050}
+\definecolor{GraphOrange}{HTML}{ffc000}
+\definecolor{light-gray}{gray}{0.95}
+
+
+\allowdisplaybreaks[4]
+
+\makeatletter
+\gdef\@ctrerr{%
+  \@latex@warning{Counter too large}}
+\makeatother
+% changes counter too large errors into warnings.
+% useful for documents with a large number of footnotes
+
+
+
+
+
+
+
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\MakePerPage{footnote}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+
+\newtheorem*{claim}{Claim}
+
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem*{conjecture*}{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{exercise}{Exercise}
+\newtheorem*{exercises}{Exercises}
+
+\newtheorem*{example}{Example}
+\AtBeginEnvironment{example}{%
+  \pushQED{\qed}\renewcommand{\qedsymbol}{$\triangle$}%
+}
+\AtEndEnvironment{example}{\popQED\endexample}
+
+\renewcommand\qedsymbol{$\blacksquare$}
+
+
+
+
+
+
+
+\DeclareMathOperator{\sech}{sech}
+\DeclareMathOperator{\csch}{csch}
+\DeclareMathOperator{\arcsec}{arcsec}
+\DeclareMathOperator{\arccot}{arccot}
+\DeclareMathOperator{\arccsc}{arccsc}
+\DeclareMathOperator{\arcosh}{arcosh}
+\DeclareMathOperator{\arsinh}{arsinh}
+\DeclareMathOperator{\artanh}{artanh}
+\DeclareMathOperator{\arsech}{arsech}
+\DeclareMathOperator{\arcsch}{arcsch}
+\DeclareMathOperator{\arcoth}{arcoth} 
+
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{tcbsiderules}[1][]{blanker, breakable, 
+     left=3mm, right=3mm, top=1mm, bottom=1mm,
+     borderline west={1pt}{-1.5pt}{black},
+     borderline west={0.5pt}{0pt}{black},
+     borderline east={0.5pt}{0pt}{black},
+     borderline east={1pt}{-1.5pt}{black},
+     before upper=\indent, parbox=false, #1}
+
+\newtcolorbox{axiombox}[1][]{
+    left=5pt,right=5pt,
+    colback=cyan!10!white,
+    frame empty,
+    width=0.98\textwidth,
+    center,
+    #1
+}
+
+
+\usepackage[myheadings]{fullpage}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{float}
+\usepackage{url, lipsum}
+\usepackage[T1]{fontenc}
+\usepackage{icomma}
+\usepackage{siunitx}
+\usepackage{ragged2e}
+\usepackage{comment}
+
+\usepackage{multicol}
+
+\usepackage{esint}
+
+\usepackage{caption}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{blindtext}
+\usepackage[square,sort,comma,numbers]{natbib}
+\usepackage[colorinlistoftodos]{todonotes}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+
+\begin{comment}
+\usepackage{draftwatermark}
+\SetWatermarkLightness{0.9}
+\DraftwatermarkOptions{color={[rgb]{1,0,0}}}
+\SetWatermarkText{REEEEEEE}
+\SetWatermarkScale{3}
+\end{comment}
+
+
+%\usepackage[bottom]{footmisc} 
+\renewcommand{\footnoterule}{\vfill\kern -3pt \hrule width 0.4\columnwidth \kern 2.6pt}
+% either of these moves footnotes to the bottom of the page.
+
+\usepackage{bussproofs}
+
+\usepackage{epigraph}
+
+% \epigraphsize{\small}% Default
+\setlength\epigraphwidth{0.75\textwidth}
+\setlength\epigraphrule{0pt}
+\renewcommand{\beforeepigraphskip}{-0.5\baselineskip}
+\renewcommand{\afterepigraphskip}{2\baselineskip}
+
+%\usepackage{etoolbox}
+%\makeatletter
+%\patchcmd{\epigraph}{\@epitext{#1}}{\itshape\@epitext{#1}}{}{}
+%\makeatother
+
+% formats all epigraphs to be italics
+
+%\usepackage{tocbibind}
+
+
+\setcounter{MaxMatrixCols}{20}
+
+\usepackage{mathdots}
+
+\usepackage{enumitem}
+
+
+\newcommand{\catname}[1]{{\normalfont\textbf{#1}}}
+\newcommand{\Set}{\catname{Set}}
+\newcommand{\FinSet}{\catname{FinSet}}
+\newcommand{\Rel}{\catname{Rel}}
+\newcommand{\Grp}{\catname{Grp}}
+\newcommand{\Met}{\catname{Met}}
+\newcommand{\Top}{\catname{Top}}
+\newcommand{\hTop}{\catname{hTop}}
+\newcommand{\Cat}{\catname{Cat}}
+\newcommand{\CAT}{\catname{CAT}}
+\newcommand{\Mon}{\catname{Mon}}
+\newcommand{\Ring}{\catname{Ring}}
+\newcommand{\Vect}{\catname{Vect}}
+\newcommand{\FinVect}{\catname{FinVect}}
+\newcommand{\Mat}{\catname{Mat}}
+\newcommand{\Mea}{\catname{Mea}}
+\newcommand{\Man}{\catname{Man}}
+\newcommand{\Topoi}{\catname{Topoi}}
+\newcommand{\Sh}{\catname{Sh}}
+
+\newcommand{\ob}{\operatorname{ob}}
+\newcommand{\op}{^{\operatorname{op}}}
+\newcommand{\ab}{^{\operatorname{ab}}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\cod}{\operatorname{cod}}
+\newcommand{\ev}{\operatorname{ev}}
+\newcommand{\Cone}{\operatorname{Cone}}
+\newcommand{\Sub}{\operatorname{Sub}}
+\newcommand{\Free}{\operatorname{Free}}
+
+
+\newcommand{\quotient}[2]{\raisebox{0.1em}{$#1$}\big/\raisebox{-0.1em}{$#2$}}
+
+\DeclareMathOperator*{\colim}{colim}
+
+\DeclareFontFamily{U}{min}{}
+\DeclareFontShape{U}{min}{m}{n}{<-> dmjhira}{}
+
+
+
+\DeclareMathAlphabet{\mathbbn}{U}{BOONDOX-ds}{m}{n}
+
+\usepackage{adjustbox}
+\tikzcdset{scale cd/.style={every label/.append style={scale=#1},
+    cells={nodes={scale=#1}}}}
+
+
+
+\newlength{\currentparskip}
+
+
+
+\graphicspath{ {figures/} }
+
+\addto\captionsenglish{%
+    \renewcommand{\listfigurename}{List of Figures}
+    \renewcommand{\listtablename}{List of Tables}
+}
+
+\usepackage[scr]{rsfso} % this is for Laplace transforms
+
+
+
+\usepackage{colortbl}
+
+
+
+
+\usepackage{calrsfs}
+\DeclareMathAlphabet{\pazocal}{OMS}{zplm}{m}{n}
+
+
+
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
+
+
+
+
+
+
+\newcommand\mathitem[1][]{\item[#1]\leavevmode\vspace*{-\dimexpr\baselineskip+\abovedisplayskip\relax}}
+% for inserting equations that don't have leading text in itemize or enumerate environments - removes the leading whitespace.
+
+
+\pagestyle{fancy}
+%\renewcommand{\chaptername}{}
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}{}}
+%\renewcommand{\subsectionmark}[1]{\markright{#1}{}}
+
+
+\fancypagestyle{toc}{%
+    \fancyhf{}
+    \setlength\headheight{15pt}
+    \fancyhead[L]{Front Matter}
+    \fancyhead[R]{Table of Contents}
+    \fancyfoot[C]{Turan Densities | \thepage}
+}
+\fancypagestyle{lot}{%
+    \fancyhf{}
+    \setlength\headheight{15pt}
+    \fancyhead[L]{Front Matter}
+    \fancyhead[R]{List of Tables}
+    \fancyfoot[C]{Turan Densities | \thepage}
+}
+\fancypagestyle{lof}{%
+    \fancyhf{}
+    \setlength\headheight{15pt}
+    \fancyhead[L]{Front Matter}
+    \fancyhead[R]{List of Figures}
+    \fancyfoot[C]{Turan Densities | \thepage}
+}
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \renewcommand{\headrulewidth}{0pt}% 
+}
+\fancypagestyle{preface}{%
+    \fancyhf{}%
+    \setlength\headheight{15pt}
+    \fancyhead[L]{Front Matter}
+    \fancyhead[R]{Preface}
+    \fancyfoot[C]{Turan Densities | \thepage}
+}
+\fancypagestyle{main}{%
+    \fancyhf{}%
+    \setlength\headheight{15pt}
+    \fancyhead[L]{REE} %>>>
+    \fancyhead[R]{\rightmark}
+    \fancyfoot[C]{Turan Densities | \thepage} %>>>
+}
+
+
+
+
+
+\newcommand{\amogus}[1]{\scalebox{#1}{
+    \begin{tikzpicture}
+        \filldraw[red]
+            {[rounded corners=15pt]
+            (0,5)
+         -- (-1,5)
+         -- (-1,1.5)}
+         -- (0,1.5)
+         -- cycle;
+        \begin{scope}
+            \clip {[rounded corners=15pt]
+                (0,5)
+             -- (-1,5)
+             -- (-1,1.5)}
+             -- (0,1.5)
+             -- cycle;
+            \filldraw[draw=none, fill=purple, opacity=0.95]
+                {[rounded corners=5pt]
+                (-1,4.1)
+             -- (-0.5,4)}
+             -- (0,4.1)
+             -- (0,1.5)
+             -- (-1,1.5)
+             -- cycle;
+        \end{scope}
+        \draw[line width=4mm]
+            {[rounded corners=15pt]
+            (0,5)
+         -- (-1,5)
+         -- (-1,1.5)}
+         -- (0,1.5);
+         
+        \filldraw[red]
+            {[rounded corners=10pt]
+            (0,3)
+         -- (0,0)
+         -- (1.6,0)
+         -- (1.6,1.5)} 
+         -- (3,1.5)
+            {[rounded corners=10pt]
+         -- (2.5,1.5)
+         -- (2.5,0.25)
+         -- (4,0.25)}
+            {[rounded corners=50pt]
+         -- (4,7) 
+         -- (0,7)}
+         -- cycle;
+        \begin{scope}
+            \clip
+                {[rounded corners=10pt]
+                (0,3)
+             -- (0,0)
+             -- (1.6,0)
+             -- (1.6,1.5)} 
+             -- (3,1.5)
+                {[rounded corners=10pt]
+             -- (2.5,1.5)
+             -- (2.5,0.25)
+             -- (4,0.25)}
+                {[rounded corners=50pt]
+             -- (4,7) 
+             -- (0,7)}
+             -- cycle;
+            \filldraw[draw=none, fill=purple, opacity=0.95]
+                (0,9)
+             -- (1,7)
+                {[rounded corners=40pt]
+             -- (0.4,6)
+             -- (0.8,2)
+             -- (4,2)}
+             -- (4,4.5)
+             -- (4,0)
+             -- (0,0)
+             -- cycle;
+        \end{scope}
+        \draw[line width=4mm]
+            {[rounded corners=15pt]
+            (0,3)
+         -- (0.15,0)
+         -- (1.7,0)} 
+            {[rounded corners=5pt]
+         -- (1.75,1.5)
+         -- (3,1.5)}
+         -- (2.35,1.5)
+            {[rounded corners=15pt]
+         -- (2.4,0.25)
+         -- (3.9,0.25)}
+            {[rounded corners=15pt]
+         -- (4,1.4)
+         -- (4.2,2.5)}
+            {[rounded corners=45pt]
+         -- (3.9,6.8) 
+         -- (0.15,7)
+         -- cycle};
+        \begin{scope}[on background layer]
+            \filldraw[draw=none, fill=black, opacity=0.65]
+                (1.9,0.1) ellipse (2.9 and 0.7);
+        \end{scope}
+        \draw[rounded corners=25pt, fill=cyan!40!white, draw=black]
+            (4.5,6) rectangle (1.5,4);
+        \begin{scope}
+            \clip (4.5,6) [rounded corners=25pt] rectangle (1.5,4);
+            \filldraw[draw=none, fill=blue!50!black, opacity=0.5]
+                {[rounded corners=20pt]
+                (2.1,6.2)
+             -- (2.1,4.7)
+             -- (4.6,4.7)}
+             -- (4.6,5.2)
+             -- (4.6,4)
+             -- (1.5,4)
+             -- (1.5,6)
+            {[rounded corners=20pt]
+             -- (2.5,6)
+             -- cycle};
+            \draw[very thick, rounded corners=7.5pt, fill=white, draw=none]
+                (4,5.5) rectangle (2.8,5);
+        \end{scope}
+        \draw[rounded corners=25pt, line width=4mm]
+            (4.5,5.9) rectangle (1.5,4);
+    \end{tikzpicture}
+    }
+}
+
+
+\fancypagestyle{sussy}{%
+    \fancyhf{}%
+    \setlength\headheight{15pt}
+    \fancyhead[L]{\amogus{0.05}} %>>>
+    \fancyhead[R]{\rightmark}
+    \fancyfoot[C]{Turan Densities | \thepage} %>>>
+}
