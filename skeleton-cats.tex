@@ -1,0 +1,2598 @@
+\documentclass[a4paper,11pt]{article}
+
+
+\title{A Skeleton of Category Theory Notes}
+\author{Ryan Tay}
+\date{9 January 2025}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{array}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage[normalem]{ulem}
+\usepackage{calligra}
+
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!70!black},
+    citecolor={green!50!black},
+    urlcolor={blue!80!black}
+}
+
+\usepackage[a4paper, top=2.54cm, left=2.54cm, right=2.54cm, bottom=2.54cm]{geometry}
+
+\newtheoremstyle{break_italics}
+  {\topsep}{\topsep}%
+  {\itshape}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{break_italics}
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition} 
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}{Claim}
+\newtheorem*{claim*}{Claim}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem*{definition*}{Definition}
+\newtheorem*{question*}{Question}
+
+
+\newtheoremstyle{break_upright}
+  {\topsep}{\topsep}%
+  {}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{break_upright}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{example*}{Example}
+\newtheorem*{observation*}{Observation}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark} 
+\newtheorem{case}{Case}
+
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+\usetikzlibrary{decorations.pathmorphing}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\zfc}{\mathsf{ZFC}}
+\newcommand{\zf}{\mathsf{ZF}}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\ob}{\operatorname{ob}}
+\newcommand{\mor}{\operatorname{mor}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\cod}{\operatorname{cod}}
+
+\def\colim{\qopname\relax m{colim}}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+Rife with proof sketches and severely lacking in examples, this document perhaps serves best as a revision guide for an introductory course in category theory rather than as a place to learn the material for the first time. The pedagogical aims are non-existent; any frustrations caused to the reader (who may very well be myself in the future and nobody else) are entirely intentional.
+
+
+\tableofcontents
+
+\clearpage \newpage
+\setcounter{section}{-1}
+\section{Yapping}
+
+\subsection{Pedagogy Propaganda}
+
+Born out of my struggles with learning category theory, this document covers a strict subset of the content taught in the Part III Category Theory course at the University of Cambridge, taught by Peter Johnstone in the academic year 2024--2025.
+
+So why write yet another set of notes on category theory? Especially when so many people (who are more proficient in \TeX\ than me) have already written up the same set of lecture notes and have made them publicly available online? Well, these are mainly for myself. I highly doubt anyone else but myself will read this, so I am under no pressure to make this more appealing to the human eye.
+
+There are, however, very noticeable differences if one compares this document with other student-typed documents on the same course.
+
+For starters, I have stripped away all numberings from definitions, theorems, propositions, etc. The purpose is to avoid the infamous instances of ``this follows from Lemma 2.3.16'' in the middle of a proof in Section 5. People who have seen Peter Johnstone's lecture notes for this course will notice that this approach is the polar opposite to the one he adopts for his notes. This may or may not come back to bite me in the form of me not having any idea of what result I used, but I will deal with that when I have to. I also (tried to) introduce definitions only when we have to use it, so the amount of scrolling back up is hopefully minimal. Next, in many footnotes, I define all dual notions. Part of learning category theory is to know which arrows to flip for dual definitions and dual results, but I believe the dual definitions should be explicitly spelled out. Far too many times, I have experienced flipping either too many or too few arrows and then wasting too much time on an inherently flawed definition. Dual theorems and dual proofs can of course be omitted. On the topic of theorems and proofs, many proofs here are incomplete or simply proof sketches; I often find it easier to work off of an idea myself than read someone else's diagram chase. The intent of this document was never to be a place where one learns category theory for the first time. To make things worse, there are virtually no examples in this document.
+
+As I already remarked, I highly believe not another soul will read this. So all of the above was just me talking to myself.
+
+\subsection{Inspirational Quotes}
+
+\begin{quote}
+\textit{``Communication among Mathematicians is governed by a number of unspoken rules. One of these specifies that a Mathematician should talk about explicit theorems or concrete examples, and not about speculative programs. I propose to violate this excellent rule.''} 
+
+--- Saunders Mac Lane, 1969, in the paper \textit{Possible programs for categorists}.
+\end{quote}
+
+\begin{quote}
+\textit{``Dear Diary, \\
+\\
+ It is Day 3 of category theory discourse. Sibling meets sibling on the battlefield, adjoint functors clashing. There is not a single example to be found anywhere. Algebraic geometers roam the land, spreading their perverse sheaves. May god have mercy on our souls.}'' 
+ 
+ --- Daniel Litt, 2023, in a post on X.com, the Everything App (formerly Twitter).
+\end{quote}
+
+\begin{quote}
+\textit{``. . . I don't like diagrams. When people draw what they mean I lose my ability to understand.''} 
+
+--- Asaf Karagila, 2013, in a blog post titled \textit{On Leinster's ``Rethinking Set Theory''}.
+\end{quote}
+
+\begin{quote}
+\textit{``Indeed, the subject might better have been called abstract function theory, or perhaps even better: archery.''}	
+
+--- Steve Awodey, 2006, in the book \textit{Category Theory}.
+\end{quote}
+
+
+\begin{quote}
+\textit{``. . . if I use the word ``topoi'', you can shoot me.''} 
+
+--- Ravi Vakil, in a draft of the book \textit{The Rising Sea: Foundations of Algebraic Geometry}.
+\end{quote}
+
+\begin{quote}
+\textit{``Once I was thinking what the category of my ex-girlfriends should be. Then I realized I was treating women as objects.''}	 
+
+--- Nikolaj Kuntner, 2015, in a discussion thread on nForum.
+\end{quote}
+
+\begin{quote}
+\textit{``. . . the ``co'' prefix alludes to a kind of duality. A lot of the time, these ``co'' concepts arise by reversing arrows. . . . A set is an arbitrary container of things called elements. . . . A coset --- as the name implies --- is an equivalence class of a group element under the action of a fixed subgroup.''} 
+
+--- Sheafification of G, 2024, in a YouTube video titled \textit{What is the opposite of a set?}	
+\end{quote}
+
+
+
+\subsection{Thank You for the Music}
+
+The Yoneda lemma tells us that our relationships to the people around us are just as (if not more) important than our own personal story. There are many people who have aided me in learning this subject. To highlight an incomplete list of such people, in no particular order, I thank:
+\begin{itemize}
+	\item Kit Liu and Kyle Thompson, my peers from my undergraduate years at the University of Warwick, for keeping in touch with me and answering many ad hoc questions;
+	\item Anand Rao Tadipatri and Jovan Gerbscheid, who (at the time of writing) are PhD students in automated theorem proving from Wolfson College during my postgraduate year at the University of Cambridge, with whom I had many conversations over dinner about category theory;
+	\item Bernardus Adri Wessels and Daniel Naylor, my peers from my postgraduate year at the University of Cambridge. Incidentally, Daniel Naylor also has a (much prettier) set of notes covering the Part III Category Theory course in full, available here: 
+		
+		\url{https://danielnaylor.uk/notes/III/Michaelmas/CT}.
+\end{itemize}
+And, of course, all the lecturers who taught me at the universities I attended.
+
+Okay, enough chatter. Let's begin.
+
+
+
+
+
+
+\clearpage \newpage
+\section{Categories}
+
+\subsection{Everything Is a Category if You Try Hard Enough}
+
+Just as every other course in mathematics, we begin with a definition.
+
+\begin{definition*}
+	A \uline{category} $\C$ consists of the following data:
+	\begin{itemize}
+		\item a collection $\ob\C$ of objects;
+		\item for each $A,B\in\ob\C$, a collection $\hom_\C(A,B)$ of \uline{morphisms from $A$ to $B$};
+		\item for each $A,B,C \in \ob\C$, a binary relation $\circ \colon \hom_\C(B,C) \times \hom_C(A,B) \to \hom_\C(A,C)$ defining the \uline{composition} of morphisms;
+	\end{itemize}
+	subject to the following two conditions:
+	\begin{itemize}
+		\item for each $A \in \ob\C$, there exists a (necessarily unique) morphism $\id_A \in \hom_\C(A,A)$ such that for all $B,C \in \ob\C$, all $f \in \hom_\C(A, B)$, and all $g \in \hom_\C(C,A)$
+			\[
+				f \circ \id_A = f \quad \text{and} \quad  \id_A \circ g = g\,;
+			\]
+		\item for all $A,B,C,D \in\ob\C$, all $f \in \hom_\C(A,B)$, all $g \in \hom_\C(B,C)$, and all $h \in \hom_\C(C,D)$,
+			\[
+				h \circ (g \circ f) = (h \circ g) \circ f\,.
+			\]
+	\end{itemize}
+\end{definition*}
+
+For a category $\C$, we write $\mor\C \coloneqq \bigcup_{A,B\in\ob\C} \hom_\C(A,B)$ for the collection of all morphisms in $\C$. For $f,g\in\mor\C$, we write typically write $fg$ in place of $f \circ g$, provided the composition is defined. For $A,B \in \ob\C$ and $f \in \hom_\C(A,B)$, we sometimes write $f$ as $A \xrightarrow{f} B$ or $f \colon A \to B$, and we denote $\dom(f) \coloneqq A$ and $\cod(f) \coloneqq B$ for the \uline{domain} and \uline{codomain} of $f$ respectively.
+
+\begin{definition*}
+	Let $\C$ be a category. A morphism $A \xrightarrow{f} B$ in $\C$ is:
+	\begin{itemize}
+		\item \uline{monic}/\uline{a monomorphism} if for all morphisms $C \substack{\xrightarrow{g} \\ \xrightarrow[h]{}} B$ in $\C$, we have that
+			\[
+				\text{if } fg = fh \text{ then } g = h\,;
+			\]
+		\item \uline{epic}/\uline{an epimorphism} if for all morphisms $B \substack{\xrightarrow{g} \\ \xrightarrow[h]{}} C$ in $\C$, we have that
+			\[
+				\text{if } gf = hf \text{ then } g = h\,;
+			\]
+		\item \uline{an isomorphism} if there exists a morphism $A \xleftarrow{f^{-1}} B$ in $\C$ such that
+			\[
+				f^{-1}f = \id_A \text{ and } ff^{-1} = \id_B\,.
+			\]
+	\end{itemize}
+\end{definition*}
+
+For a morphism $A \xrightarrow{f} B$ in some category, we write $A \overset{f}\rightarrowtail B$ if $f$ is a monomorphism, we write $A \overset{f} \twoheadrightarrow B$ if $f$ is an epimorphism, and we write $A \xrightarrow[\cong]{f} B$ if $f$ is an isomorphism. For any objects $A$ and $B$ in some category, we write $A \cong B$ if there exists an isomorphism from $A$ to $B$ in that category.
+
+Note that isomorphisms are necessarily both monic and epic. The converse is not true: there are morphisms which are monic and epic which are not isomorphisms, for example in the category $\mathbf{Top}$ of topological spaces and continuous functions. There are categories where isomorphisms precisely coincide with morphisms which are both monic and epic, for example the category $\Set$ of sets and functions (with domains and codomains specified). We call a category $\C$ \uline{balanced} if every morphism in $\C$ which is both monic and epic is also an isomorphism.
+
+If $\C$ is a category, a collection $\D \subseteq \C$ of objects and morphisms is a \uline{subcategory of $\C$} if $\D$ itself is a category when we restrict the binary operation $\circ$ to $\D$. A subcategory $\D \subseteq \C$ is said to be a \uline{full subcategory of $\C$} if for any $A,B \in \ob\D$, we have that $\hom_\D(A,B) = \hom_\C(A,B)$.
+
+Perhaps one of the most common phrases in category theory is ``the following diagram \uline{commutes}''. This phrase typically means, given an implied starting object $A$ and ending object $B$, all composite morphisms from $A$ to $B$ are equal. For example, consider the diagram
+\[
+\begin{tikzcd}
+\bullet \arrow[r, "f"] \arrow[rd, "h"'] & \bullet \arrow[d, "g"] \\
+                                        & \bullet               
+\end{tikzcd}
+\]
+with the objects unspecified and with morphisms $f$, $g$, and $h$. We say that the triangle above commutes if $gf = h$. As another example, the following square
+\[
+\begin{tikzcd}
+\bullet \arrow[r, "f"] \arrow[d, "h"'] & \bullet \arrow[d, "g"] \\
+\bullet \arrow[r, "k"']                & \bullet               
+\end{tikzcd}
+\]
+commutes if $gf = kh$. One often writes the symbol $\circlearrowright$ in a diagram to indicate that it commutes. With the triangle and square above, their commutativity would be indicated as follows:
+\[\begin{tikzcd}
+	\bullet & \bullet && \bullet & \bullet \\
+	& \bullet && \bullet & \bullet
+	\arrow["f", from=1-1, to=1-2]
+	\arrow[""{name=0, anchor=center, inner sep=0}, "h"', from=1-1, to=2-2]
+	\arrow["g", from=1-2, to=2-2]
+	\arrow["f", from=1-4, to=1-5]
+	\arrow["h"', from=1-4, to=2-4]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-4, to=2-5]
+	\arrow["g", from=1-5, to=2-5]
+	\arrow["k"', from=2-4, to=2-5]
+	\arrow["\circlearrowright"{description, pos=0.4}, draw=none, from=1-2, to=0]
+\end{tikzcd}\]
+Note that commuting diagrams can be stacked on each other to produce a bigger commuting diagram. For example, consider the diagram
+\[\begin{tikzcd}
+	\bullet & \bullet & \bullet \\
+	\bullet & \bullet & \bullet
+	\arrow["f", from=1-1, to=1-2]
+	\arrow["h"', from=1-1, to=2-1]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-1, to=2-2]
+	\arrow["g", from=1-2, to=1-3]
+	\arrow["i", from=1-2, to=2-2]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-2, to=2-3]
+	\arrow["j", from=1-3, to=2-3]
+	\arrow["k"', from=2-1, to=2-2]
+	\arrow["\ell"', from=2-2, to=2-3]
+\end{tikzcd}\]
+consisting of two commuting squares $\begin{tikzcd}
+	\bullet & \bullet \\
+	\bullet & \bullet
+	\arrow["f", from=1-1, to=1-2]
+	\arrow["h"', from=1-1, to=2-1]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-1, to=2-2]
+	\arrow["i", from=1-2, to=2-2]
+	\arrow["k"', from=2-1, to=2-2]
+\end{tikzcd}$ and $\begin{tikzcd}
+	\bullet & \bullet \\
+	\bullet & \bullet
+	\arrow["g", from=1-1, to=1-2]
+	\arrow["i"', from=1-1, to=2-1]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-1, to=2-2]
+	\arrow["j", from=1-2, to=2-2]
+	\arrow["\ell"', from=2-1, to=2-2]
+\end{tikzcd}$, that is, $if = kh$ and $jg = \ell i$. Then, by Stokes' theorem, we also have the commuting ``outer diagram''
+\[\begin{tikzcd}
+	\bullet && \bullet \\
+	\bullet && \bullet
+	\arrow["gf", from=1-1, to=1-3]
+	\arrow["h"', from=1-1, to=2-1]
+	\arrow["\circlearrowright"{description}, draw=none, from=1-1, to=2-3]
+	\arrow["j", from=1-3, to=2-3]
+	\arrow["{\ell k}"', from=2-1, to=2-3]
+\end{tikzcd}\]
+That is, $jgf = \ell k h$. Of course, we also have $jgf = \ell k h = \ell if$.
+
+I will stop drawing the circular arrows $\circlearrowright$ to indicate the commutativity of diagrams, for my \TeX\ skills aren't that good and, frankly, I find them to more of a nuisance than helpful on anything other than rough working.
+
+
+
+
+
+
+
+\subsection{Fill In the Blank: ``Functor? \underline{ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ } !''}
+
+\begin{definition*}
+Let $\C$ and $\D$ be categories. A \uline{functor} $F \colon \C \to \D$ is a mapping $F \colon \ob\C \to \ob\D$ and $F \colon \mor\C\to\mor\D$ such that:
+\begin{itemize}
+	\item for each $A,B \in \ob\C$ and $f \in \hom_\C(A,B)$, we have $Ff \in \hom_\D(FA,FB)$;
+	\item $F(\id_A) = \id_{FA}$ for all $A \in \ob\C$;
+	\item $F(gf) = (Fg)(Ff)$ for any two morphisms $A \xrightarrow{f} B \xrightarrow{g} C$ in $\C$.
+\end{itemize}
+\end{definition*}
+
+We sometimes write a functor $F \colon \C \to \D$ as $\C \xrightarrow{F} \D$. For functors $\C \xrightarrow{F} \D \xrightarrow{G} \mathcal E$, we define the \uline{composition of functors} $\C \xrightarrow{GF} \mathcal E$ as follows:
+\begin{itemize}
+	\item $(GF)A \coloneqq G(FA)$ for all $A \in \ob\C$;
+	\item $(GF)f \coloneqq G(Ff)$ for all $f \in \mor\C$.
+\end{itemize}
+Note that $GF \colon \C \to \mathcal E$ is necessarily also a functor if $F \colon \C \to \D$ and $G \colon \D \to \mathcal E$ are both functors. We write $\id_\C$ for the \uline{identity functor} on a category $\C$.
+
+\begin{definition*}
+Let $\C \substack{\xrightarrow{F} \\ \xrightarrow[G]{}} \D$ be functors. A \uline{natural transformation} $\eta \colon F \to G$ is a mapping $\eta \colon \ob\C \to \mor\D$ such that
+\begin{itemize}
+	\item for any $A \in \ob\C$, we have a morphism $FA \xrightarrow{\eta_A} GA$;
+	\item for any morphism $A \xrightarrow{f} B$ in $\C$, the following \uline{naturality square}
+		\[
+\begin{tikzcd}
+FA \arrow[rr, "Ff"] \arrow[dd, "\eta_A"'] &  & FB \arrow[dd, "\eta_B"] \\
+                                          &  &                         \\
+GA \arrow[rr, "Gf"']                      &  & GB                     
+\end{tikzcd}
+		\]
+		commutes.
+\end{itemize}
+\end{definition*}
+
+For functors $\begin{tikzcd}
+\C \arrow[rr, "G"] \arrow[rr, "F", bend left] \arrow[rr, "H"', bend right] &  & \D
+\end{tikzcd}$ and natural transformations $\alpha \colon F \to G$ and $\beta \colon G \to H$, we define the \uline{(vertical) composition} $\beta\alpha \colon F \to H$ pointwise as follows: for $A \in \ob\C$, 
+\[
+	(\beta\alpha)_A \coloneqq \beta_A\alpha_A\,.
+\]
+For categories $\C$ and $\D$, we write $[\C,\D]$, or $\D^\C$, for the \uline{functor category} whose objects are functors from $\C$ to $\D$ and whose morphisms are natural transformations between the functors. Isomorphisms in $[\C,\D]$ are called \uline{natural isomorphisms}. If an isomorphism in $[\C,\D]$ exists, then we say that $\C$ and $\D$ are \uline{(naturally) isomorphic} and we write $\C \cong \D$.
+
+\begin{lemma*}
+Let $\C \substack{\xrightarrow{F} \\ \xrightarrow[G]{}} \D$ be functors, and let $\eta \colon F \to G$ be a natural transformation. Then $\eta$ is a natural isomorphism if and only if for all $A \in \ob\C$, the morphism $FA \xrightarrow{\eta_A} GA$ is an isomorphism in $\D$.
+\end{lemma*}
+\begin{proof}
+Every baby automatically knows the following three things from the moment they draw their first breath: how to cry; O. J. Simpson did it; and that natural isomorphisms are precisely natural transformations which are pointwise isomorphisms.
+\end{proof}
+
+\subsection{A Gun Hangs on the Wall}
+
+Being isomorphic, as categories, is quite a strong condition. There is a weaker notion of two categories being ``the same''.
+
+\begin{definition*}
+	We say that categories $\C$ and $\D$ are \uline{equivalent}, and write $\C \simeq \D$, if there exist functors $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ and there exist natural isomorphisms $\eta \colon \id_\C \to GF$ and $\varepsilon \colon FG \to \id_\D$.	
+\end{definition*}
+
+For brevity, if functors $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ witness an equivalence of categories, then we often simply say that the functor \uline{$F$ is an equivalence of categories}.
+
+For now, it may seem strange that one of the natural isomorphisms above points \textit{away} from an identity functor and that the other points \textit{to} an identity functor. Because we require that $\eta$ and $\varepsilon$ above are natural \textit{iso}morphisms, it does not really matter which way the arrows point. Just go with the definition as is; we will come back to it.
+
+Clearly, if categories $\C$ and $\D$ are isomorphic, then they are equivalent. The converse is not true. The following two categories are equivalent but not isomorphic:
+\begin{itemize}
+	\item the category $\mathbf{fdVect}_K$ whose objects are finite-dimensional vector spaces over a field $K$ and whose morphisms are linear maps between vector spaces;
+	\item the category $\mathbf{Mat}_K$ whose objects are the vector spaces $K^n$, for each $n \in \N$, and whose morphisms from $K^m$ to $K^n$ are $(m \times n)$-matrices\footnote{For those who have not done linear algebra in a while, an $(m \times n)$-matrix is a matrix with $m$ rows and $n$ columns.} with entries in the field $K$.
+\end{itemize}
+
+
+\begin{definition*}
+A functor $F \colon \C \to \D$ is said to be:
+\begin{itemize}
+	\item \uline{faithful} if for all $A,B \in \ob\C$ and all $f,g \in \hom_\C(A,B)$,
+		\[
+			\text{if } Ff = Fg \text{ then } f = g\,;
+		\]
+	\item \uline{full} if for all $A,B \in \ob\C$,
+		\[
+			\text{for all } g \in \hom_\D(FA,FB) \text{, there exists } f \in \hom_\C(A,B) \text{ such that } Ff = g\,;
+		\]
+	\item \uline{essentially injective} if for all $A,B \in \ob\C$,
+		\[
+			\text{if } FA \cong FB \text{ in } \D \text{, then } A \cong B \text{ in }\C\,;
+		\]
+	\item \uline{essentially surjective} if
+		\[
+			\text{for all } B \in \ob\D \text{ there exists } A \in \ob\C \text{ such that } FA \cong B \text{ in } \D\,.
+		\]
+\end{itemize}	
+\end{definition*}
+
+We will show that a functor $F \colon \C \to \D$ witnesses an equivalence between the categories $\C$ and $\D$ if and only if $F$ satisfies all the four properties above. But first, one of these properties is redundant for this characterisation of equivalence of categories. Observe that for any functor $F \colon \C \to \D$, the following two properties hold:
+\begin{itemize}
+	\item if $f \in \mor\C$ is an isomorphism, then $Ff$ is also an isomorphism;
+	\item if $A, B \in \ob\C$ are such that $A \cong B$ in $\C$, then $FA \cong FB$ in $\D$.
+\end{itemize}
+Full and faithful functors satisfy the converse of the two properties above: if $F \colon \C \to \D$ is a full and faithful functor, then:
+\begin{itemize}
+	\item \uline{$F$ reflects isomorphisms}, i.e. for all $f \in \mor\C$	, if $Ff$ is an isomorphism, then $f$ is an isomorphism;
+	\item \uline{$F$ creates isomorphisms}, i.e. for all $A,B \in \ob\C$, if $FA \cong FB$ in $\D$, then $A \cong B$ in $\C$.
+\end{itemize}
+A functor creating isomorphisms is just another name for that functor being essentially injective.
+
+\begin{theorem*}
+	Let $F \colon \C \to \D$ be a functor. Then $F$ is an equivalence of categories if and only if $F$ is full, faithful, and essentially surjective.
+\end{theorem*}
+\begin{proof}
+For the forward direction, suppose that we have functors $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ and natural isomorphisms $\eta \colon 1_\C \to GF$ and $\varepsilon \colon FG \to 1_\D$.
+\begin{itemize}
+	\item For essential surjectivity, for all $B \in \ob\D$ the isomorphism $FGB \xrightarrow[\cong]{\varepsilon_B}B$ witnesses the fact that $F$ is essentially surjective.
+	\item For faithfulness, if $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ are morphisms in $\C$ satisfying $Ff = Fg$, then the diagrams
+		\[
+\begin{tikzcd}
+A \arrow[rr, "f", bend left] \arrow[rr, "g"', bend right] \arrow[dd, "\alpha_A"'] &  & B                                \\
+                                                                                  &  &                                  \\
+GFA \arrow[rr, "GFf = GFg"']                                                      &  & GFB \arrow[uu, "\alpha_B^{-1}"']
+\end{tikzcd}
+		\]
+		commute, by the naturality of $\alpha$. This means $f = g$. Notice that a similar argument using $FG$ and $\beta$ implies that $G$ is also faithful.
+		\item For fullness, given a morphism $FA \xrightarrow{g} FB$ in $\D$, the diagrams
+		\[
+\begin{tikzcd}
+A \arrow[rr, "f \coloneqq \alpha_B^{-1} (Gg)\alpha_A"]                                &  & B \arrow[dd, "\alpha_B^{-1}"] \\
+                                                                                      &  &                               \\
+GFA \arrow[uu, "\alpha_A"] \arrow[rr, "Gg", bend left] \arrow[rr, "GFf"', bend right] &  & GFB                          
+\end{tikzcd}
+		\]
+		commute by the definition of $f$ and the by naturality of $\alpha$. Therefore $GFf = Gg$. Now, by the faithfulness of $G$, we get $Ff = g$.
+\end{itemize}
+
+For the converse, define $\varepsilon$ and $G \colon \ob\D\to\ob\C$ together as follows: for each $B \in \ob\D$, choose $GB \in \ob\C$ to be such that there is an isomorphism $FGB \xrightarrow[\cong]{\varepsilon_B} B$ in $\D$. For a morphism $B \xrightarrow{g} C$ in $\D$, define $Gg$ to be the unique morphism in $\hom_\C(GB,GC)$ such that:
+\[
+\begin{tikzcd}
+GB \arrow[dddd, "Gg"] &                            &    & FGB \arrow[d,"\cong", "\varepsilon_B"']    \\
+                      &                            &    & B \arrow[dd, "g"']                 \\
+                      & {} \arrow[r, "F", maps to] & {} &                                    \\
+                      &                            &    & C \arrow[d,"\cong", "\varepsilon_C^{-1}"'] \\
+GC                    &                            &    & FGC                               
+\end{tikzcd}
+\]
+Finally for $A\in\ob\C$, define $A \xrightarrow{\eta_A} GFA$ to be the unique morphism in $\hom_\C(A,GFA)$ such that:
+\[
+\begin{tikzcd}
+A \arrow[dd, "\eta_A"] &                            &    & FA \arrow[dd, "\varepsilon_{FA}^{-1}"'] \\
+                       & {} \arrow[r, "F", maps to] & {} &                                         \\
+GFA                    &                            &    & FGFA                                   
+\end{tikzcd}
+\]
+Then $F,G,\eta,\varepsilon$ witness the equivalence of the categories $\C$ and $\D$.
+\end{proof}
+
+Curiously, the functors $F$ and $G$ and the natural isomorphisms $\eta$ and $\varepsilon$ obtained from the converse of the theorem above make the following triangles
+\[
+\begin{tikzcd}
+F \arrow[rr, "F\eta"] \arrow[rrdd, "\id_F"'] &  & FGF \arrow[dd, "\varepsilon_F"] &  & G \arrow[rr, "\eta_G"] \arrow[rrdd, "\id_G"'] &  & GFG \arrow[dd, "G\varepsilon"] \\
+                                             &  &                                 &  &                                               &  &                                \\
+                                             &  & F                               &  &                                               &  & G                             
+\end{tikzcd}
+\]
+living in $[\C,\D]$ and $[\D,\C]$ respectively commute. More specifically, we mean that for any $A \in \ob\C$ and any $B \in \ob\D$, the following triangles
+\[
+\begin{tikzcd}
+FA \arrow[rr, "F\eta_A"] \arrow[rrdd, "\id_{FA}"'] &  & FGFA \arrow[dd, "\varepsilon_{FA}"] &  & GB \arrow[rr, "\eta_{GB}"] \arrow[rrdd, "\id_{GB}"'] &  & GFGB \arrow[dd, "G\varepsilon_B"] \\
+                                                   &  &                                     &  &                                                      &  &                                   \\
+                                                   &  & FA                                  &  &                                                      &  & GB                               
+\end{tikzcd}
+\]
+living in $\D$ and $\C$ respectively commute. The first triangle, in $\D$, commutes by taking the image of the commuting square
+\[
+\begin{tikzcd}
+A \arrow[rr, "\id_A"] \arrow[dd, "\eta_A"'] &  & A                              \\
+                                            &  &                                \\
+GFA \arrow[rr, "\id_{GFA}"']                &  & GFA \arrow[uu, "\eta_A^{-1}"']
+\end{tikzcd}
+\]
+under the functor $F$, and observing that $F\eta_A^{-1} = \varepsilon_{FA}$ by definition of $\eta_A$. The second triangle, in $\C$, follows by taking the image of the commuting square
+\[
+\begin{tikzcd}
+FGB \arrow[rr, "\id_{FGB}"]                             &  & FGB \arrow[dd, "\varepsilon_B"] \\
+                                                        &  &                                 \\
+B \arrow[rr, "\id_B"'] \arrow[uu, "\varepsilon_B^{-1}"] &  & B                              
+\end{tikzcd}
+\]
+under the functor $G$, and observing that the diagram on the right below
+\[
+\begin{tikzcd}
+GB \arrow[dddddd, "G\varepsilon_B^{-1}", bend left] \arrow[dddddd, "\eta_{GB}"', bend right] &     &  &    & FGB \arrow[dd, "\varepsilon_B", bend left=49] \arrow[dddddd, "\varepsilon_{FGB}^{-1}"', bend right] \\   &  &  &    &  \\      &  &  &    & B \arrow[dd, "\varepsilon_B^{-1}", bend left=49]           \\     & {} \arrow[rr, "F", maps to] &  & {} &  \\    &  &  &    & FGB \arrow[dd, "\varepsilon_{FGB}^{-1}", bend left=49]  \\   &  &  &    &    \\ GFGFB   &   &  &    & FGFGB                                                                                              
+\end{tikzcd}
+\]
+commutes by definition of $\eta$, $\varepsilon$, and $G$, so two morphisms in the diagram on the left are equal by the faithfulness of $F$.
+
+
+
+
+
+\subsection{Say the Word ``Dually'' Instead of ``Similarly'' to Sound Smarter}
+
+Given any category $\C$, we can form its \uline{opposite category} $\C^\op$ as follows:
+\begin{itemize}
+	\item $\ob\C^\op \coloneqq \ob\C$;
+	\item $\hom_{\C^\op}(A,B) \coloneqq \hom_\C(B,A)$ for any $A,B\in \ob\C^\op$
+	\item for any two morphisms $A \xleftarrow{f} B \xleftarrow{g} C$ in $\C^\op$, we define the composition $A \xleftarrow{fg}C$ in $\C^\op$ to be the composition $A \xrightarrow{gf} C$ in $\C$.
+\end{itemize}
+
+Given a functor $F \colon \C \to \D$, its \uline{opposite functor} $F^\op \colon \C^\op \to \D^\op$ is the functor defined by $F^\op A \coloneqq FA$, for all $A \in \ob\C^\op = \ob\C$, and $F^\op (A \xrightarrow{f} B) \coloneqq F(B \xrightarrow{f} A)$, for all $f \in \hom_{\C^\op}(A,B) = \hom_\C(B,A)$.
+
+Given two functors $\C \substack{\xrightarrow{F} \\ \xrightarrow[G]{}} \D$ and a natural transformation $\eta \colon F \to G$, we can define the \uline{opposite natural transformation} $\eta^\op \colon G^\op \to F^\op$ by $\eta^\op_A \coloneqq \eta_A$.
+
+Intuitively, we obtain $\C^\op$ by ``flipping all the arrows'' in the category. This gives a certain \uline{duality principle}: when we prove that a category $\C$ satisfies some categorical proposition $P$, then $\C^\op$ satisfies the proposition $P_{\text{dual}}$ obtained by flipping all the morphisms which occur in $P$. For instance, if we have shown that a functor $F \colon \C \to \D$ is an equivalence, then the functor $F^\op \colon \C^\op \to \D^\op$ is also an equivalence.
+
+
+
+
+\subsection{Who's Making All That Noise? Oh. It's a Set Theorist Whining.}
+
+All this talk about the word ``collection'' may have raised some eyebrows. You may have many questions. What do we mean by the word ``collection'' if we do not mean ``set''? What justifies us talking about the category $\Set$ of \textit{all} sets and functions between sets? Surely that collection is too large for us to assert its existence? Would Bertrand Russell not have something to say about all this?
+
+We respond with the age-old rebuttal:
+\[
+	\text{\calligra Shut up.}
+\]
+
+But limiting the size of our categories to sets does sometimes have some merit. We say that a category $\C$ is \uline{locally small} if for any $A, B \in \ob\C$, the collection $\hom_\C(A,B)$ of morphisms from $A$ to $B$ can actually be encoded as a set in set theory. We say that a category $\C$ is \uline{small} if both $\ob\C$ and $\mor\C$ can be encoded as sets in set theory. We write $\mathbf{Cat}$ for the category whose objects are all small categories, and whose morphisms are functors between small categories.
+
+If $\C$ is a locally small category and $A \in \ob\C$, we can define a functor $\hom_\C(A, -) \colon \C \to \Set$ as follows:
+\begin{itemize}
+	\item we map objects $B \in \ob\C$ to $\hom_\C(A,B)$;
+	\item we map morphisms $B \xrightarrow{f} C$ in $\C$ to the function $\hom_\C(A,B) \xrightarrow{f \circ -} \hom_\C(A, C)$ sending a morphism $A \xrightarrow{g} B$ to the morphism $A \xrightarrow{fg} C$.
+\end{itemize}
+We can also define the dual functor to the above. For a locally small category $\C$ and $A \in \ob\C$, the functor $\hom_\C(-,A) \colon \C^\op \to \Set$ is defined on objects by $B \mapsto \hom_\C(B,A)$ for $B \in \ob\C$ and is defined on morphisms by $f \mapsto \big(\hom_\C(\cod(f),A) \xrightarrow{g \mapsto gf} \hom_\C(\dom(f),A)\big)$ for $f \in \mor\C$.
+
+Thus, given a locally small category $\C$, we can study the morphisms out of (or into) objects, rather than study the objects themselves. This is a powerful change of view: rather than deal with the actual object $A$, we instead become interested in how it behaves with respect to other objects in that category.
+
+It is worth pointing out that one can still talk about the functors $\hom_\C(A, -)$ and $\hom_\C(-, A)$ even when $\C$ is not locally small, for everything can be translated into elementary terms. These functors would just not live in the functor category $[\C,\Set]$. But we can still talk about natural transformations between these functors. Restricting to the case when $\C$ is locally small is simply so we can use desirable properties of sets without worry.
+
+Also note that we will be abusing the axiom of choice. For example, in the first theorem. We can go further: a category $\C$ is said to be \uline{skeletal} if every isomorphism class in $\C$ has only one object. For instance, $\mathbf{fdVect}_K$, for a field $K$, is not skeletal, but $\mathbf{Mat}_K$ is. In fact, we say that $\mathbf{Mat}_K$ is the \uline{skeleton} of $\mathbf{fdVect}_K$, meaning that $\mathbf{Mat}_K$ is a skeletal category which is a full subcategory of $\mathbf{fdVect}_K$.
+
+
+
+
+
+
+
+\clearpage \newpage
+\section{Universal Properties}
+
+
+\subsection{The Hardest Trivial Thing in Mathematics}
+
+\begin{theorem*}[The Yoneda Lemma --- The Covariant Version]
+	Let $\C$ be a locally small category, let $A \in \ob\C$, and let $F \colon \C \to \Set$ be a functor. Then there exists a bijection
+	\[
+		\varphi_{A,F} \colon \hom_{[\C, \Set]}\big(\hom_\C(A, -), F\big) \to FA
+	\]
+	which is \underline{natural in $A$ and $F$}. Naturality here means that when we define the following two functors from $\C \times [\C, \Set]$ to $\Set$:
+	\begin{itemize}
+		\item we define the functor $\hom_{[\C,\Set]}\big(\hom_\C(-,-),-\big) \colon \C \times [\C, \Set] \to \Set$ by mapping objects $(A, F)$ to
+		\[
+			\hom_{[\C, \Set]}\big(\hom_\C(A, -), F\big)\,,
+		\]
+		and morphisms $(A\xrightarrow{f}A', F \xRightarrow{\alpha} F')$ to the function
+		\[
+			\hom_{[\C,\Set]}\big(\hom_\C(f,-),\alpha\big)
+		\]
+		which is defined to be the diagonal of the commuting square
+		\[
+	\begin{tikzcd}
+\hom_{[\C,\Set]}\big(\hom_\C(A,-),F\big) \arrow[rrrrr, "\eta \mapsto \Big(B \mapsto \big(h \mapsto \eta_B(hf)\big) \Big)"] \arrow[dd, "{\eta \mapsto \alpha\eta}"'] &  &  &  &  & \hom_{[\C,\Set]}\big(\hom_\C(A',-),F\big) \arrow[dd, "{\eta \mapsto \alpha\eta}"] \\
+                                                            &  &  &  &  &                                      \\
+\hom_{[\C,\Set]}\big(\hom_\C(A,-),F'\big) \arrow[rrrrr, "\eta \mapsto \Big(B \mapsto \big(h \mapsto \eta_B(hf)\big) \Big)"']                        &  &  &  &  & \hom_{[\C,\Set]}\big(\hom_\C(A', -), F'\big)                                
+\end{tikzcd}
+	\]
+		\item we define the functor $-(-) \colon \C \times [\C, \Set] \to \Set$ by mapping objects $(A, F)$ to 
+		\[
+			FA\,,
+		\]
+		and morphisms $(A\xrightarrow{f}A', F \xRightarrow{\alpha} F')$ to the function
+		\[
+			\alpha_{A'}(Ff)
+		\]
+		which is the diagonal of the commuting square
+		\[
+		\begin{tikzcd}
+FA \arrow[rr, "Ff"] \arrow[dd, "\alpha_A"'] &  & FA' \arrow[dd, "\alpha_{A'}"] \\
+                                            &  &                               \\
+F'A \arrow[rr, "F'f"']                      &  & F'A'                         
+\end{tikzcd}
+		\]
+	\end{itemize}
+	then $\varphi$ is a natural isomorphism from $\hom_{[\C,\Set]}\big(\hom_\C(-,-),-\big)$ to $-(-)$.
+\end{theorem*}
+\begin{proof}
+Define $\varphi_{A,F} \colon \hom_{[\C, \Set]}\big(\hom_\C(A, -), F\big) \to FA$ by
+\[
+	\varphi_{A,F}(\eta) \coloneqq \eta_A(\id_A)
+\]
+for natural transformations $\eta \colon \hom_\C(A,-) \to F$.
+\end{proof}
+
+The real message of the Yoneda lemma can be captured through its corollaries.
+
+\begin{corollary*}
+	Let $\C$ be a locally small category. Then the mapping
+	\begin{itemize}
+		\item $A \mapsto \hom_\C(A, -)$, for $A \in \ob\C$,
+		\item $f \mapsto \Big(\hom_\C(\cod(f), -) \xrightarrow{C \mapsto (h \mapsto hf)} \hom_\C(\dom(f), -)\Big)$, for $f \in \mor\C$,
+	\end{itemize}
+	is a full and faithful functor from $\C^\op$ to $[\C, \Set]$.
+\end{corollary*}
+
+Thus, any locally small category $\C$ may be viewed equivalent to a full subcategory of $[\C,\Set]$. We call the full and faithful functor from the corollary above (or its dual version below) the \uline{Yoneda embedding(s)}.
+
+We also have following ``famous'' corollary of the Yoneda lemma: if we know all the maps out of a certain object, then that's as good as knowing the object itself.
+
+\begin{corollary*}
+Let $\C$ be a locally small category and let $A,B \in \ob\C$. Then $A \cong B$ in $\C$ if and only if $\hom_{\C}(A, -) \cong \hom_{\C}(B,-)$ in $[\C,\Set]$.
+\end{corollary*}
+
+Dually, we have the following contravariant version of the Yoneda lemma, along with its corollaries.
+
+\begin{theorem*}[The Yoneda Lemma --- The Contravariant Version]
+	Let $\C$ be a locally small category, let $A \in \ob\C$, and let $F \colon \C^\op \to \Set$ be a functor (so that $F \colon \C \to \Set$ is a contravariant functor). Then there exists a bijection
+	\[
+		\varphi_{A,F} \colon \hom_{[\C^\op,\Set]}\big(\hom_\C(-, A), F\big) \to FA
+	\]
+	which is natural in $A$ and $F$.
+\end{theorem*}
+
+\begin{corollary*}
+Let $\C$ be a locally small category. Then the mapping
+\begin{itemize}
+	\item $A \mapsto \hom_\C(-, A)$, for $A \in \ob\C$,
+	\item $f \mapsto \Big(\hom_\C(-,\dom(f)) \xrightarrow{C \mapsto (h \mapsto fh)} \hom_\C(-, \dom(f))\Big)$, for $f \in \mor\C$,
+\end{itemize}
+is a full and faithful functor from $\C$ to $[\C^\op,\Set]$.
+\end{corollary*}
+
+\begin{corollary*}
+Let $\C$ be a locally small category and let $A,B\in\ob\C$. Then $A \cong B$ in $\C$ if and only if $\hom_\C(-,A) \cong \hom_\C(-,B)$ in $[\C^\op, \Set]$.	
+\end{corollary*}
+
+
+
+\subsection{The One Thing Category Theory is Good For}
+
+\begin{definition*}
+	Let $\C$ be a locally small category. A functor $F \colon \C \to \Set$ is \uline{representable} if there exists $A \in \ob\C$ such that $F \cong \hom_{\C}(A,-)$ in $[\C,\Set]$. If $A \in \ob\C$ and $x \in FA$ are such that:
+	\begin{itemize}
+		\item $F \cong \hom_\C(A, -)$ in $[\C,\Set]$; and
+		\item if $\eta \colon \hom_\C(A,-) \to F$ is the (unique) natural transformation such that $\eta_A(\id_A) = x$, then $\eta$ is an isomorphism;
+	\end{itemize}
+	then we say the pair $(A,x)$ is a \uline{representation of $F$}, that \uline{$A$ is a representing object for $F$}, and that \uline{x is a universal element of $F$}.
+\end{definition*}
+
+Using the Yoneda embedding we can prove that if $(A,x)$ and $(B,y)$ are two representations of some functor $F \colon \C \to \Set$, where $\C$ is a locally small category, then there exists a unique isomorphism $A \xrightarrow[\cong]{f} B$ such that $(Ff)(x) = y$. Thus we can speak of \textit{the} representation of a representable functor, and \textit{the} universal element of a representable functor.
+
+Representations and universal elements are perhaps the single most powerful tool from category theory. They give us ``universal properties'', as we shall see below.
+
+Given a locally small category $\C$ and objects $A,B \in \ob\C$, we can construct the functor $\hom_\C(-, A) \times \hom_\C(-, B) \colon \C^\op \to \Set$. If this functor is representable, we denote by $A \times B$ its representing object, and we denote by $(A \times B \xrightarrow{\pi_1} A, A \times B \xrightarrow{\pi_2} B)$ its universal element. Then for any pair of morphisms $C \xrightarrow{f} A$ and $C \xrightarrow{g} B$ in $\C$, there exists a unique morphism $C \xrightarrow{h} A \times B$ such that $f = \pi_1h$ and $g = \pi_2h$. Diagrammatically,
+\[
+\begin{tikzcd}
+  & C \arrow[ldddd, "f"', bend right] \arrow[rdddd, "g", bend left] \arrow[dd, "\exists !", dashed] &   \\
+  &                                                                                                 &   \\
+  & A \times B \arrow[ldd, "\pi_1"'] \arrow[rdd, "\pi_2"]                                           &   \\
+  &                                                                                                 &   \\
+A &                                                                                                 & B
+\end{tikzcd}
+\]
+We typically denote the unique induced morphism above by $C \xrightarrow{(f,g)} A \times B$.
+
+The converse also holds: if there is some object $A \times B$ and a pair of morphisms $A \xleftarrow{\pi_1} A \times B \xrightarrow{\pi_2} B$ making the diagram above commute for all pairs of morphisms $C \xrightarrow{f} A$ and $C \xrightarrow{g} B$, then the functor $\hom_\C(-, A) \times \hom_\C(-, B) \colon \C^\op \to \Set$ is representable with $A \times B$ as its representing object and the pair $(A \times B \xrightarrow{\pi_1} A, A \times B \xrightarrow{\pi_2} B)$ as its universal element. If it exists, we call $A \times B$ the \uline{(categorical) product of $A$ and $B$ in $\C$}, and we call the morphisms $A \xleftarrow{\pi_1} A \times B \xrightarrow{\pi_2} B$ \uline{(product) projections}. Note that the notions of products and projects still make sense in a category which is not locally small, for we can use the elementary definition as the diagram above portrays.
+
+Given two morphisms $A_1 \xrightarrow{f_1} B_1$ and $A_2 \xrightarrow{f_2} B_2$, if $A_1 \times A_2$ and $B_1 \times B_2$ exist, then we have a morphism $A_1 \times A_2 \xrightarrow{f_1 \times f_2} B_1 \times B_2$ which is the morphism induced in the diagram 
+\[
+\begin{tikzcd}
+                      & A_1 \times A_2 \arrow[ld, "\pi_1"'] \arrow[rd, "\pi_2"] \arrow[d, "\exists!", dashed] &                      \\
+A_1 \arrow[d, "f_1"'] & B_1 \times B_2 \arrow[ld, "p_1"] \arrow[rd, "p_2"']                                   & A_2 \arrow[d, "f_2"] \\
+B_1                   &                                                                                       & B_2                 
+\end{tikzcd}
+\]
+where $\pi_1$, $\pi_2$, $p_1$, and $p_2$ are the relevant product projections.
+
+Dually\footnote{For completeness, here is the full definition. Given a locally small category $\C$ and objects $A,B \in \ob\C$, if the functor $\hom_\C(A,-) \times \hom_\C(B,-) \colon \C \to \Set$ is representable, then its representing object is called the \uline{(categorical) coproduct of $A$ and $B$}, denoted by $A + B$, and the pairs of morphisms $A \xrightarrow{i_1} A + B \xleftarrow{i_2} B$ appearing in the universal element are called \uline{coprojections}.}, we have the notion of a \uline{(categorical) coproduct}.
+
+Given a locally small category $\C$ and a pair of (not necessarily distinct) morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$, we can define the functor $E_{f,g} \colon \C^\op \to \C$ as follows:
+\begin{itemize}
+	\item $E_{f,g}(X) \coloneqq \{\,h \in \hom_\C(C,A) : fh = gh\,\}$, for $X \in \ob\C$;
+	\item $E_{f,g}(h) \coloneqq \big( E_{f,g}(Y) \xrightarrow{k \mapsto hk} E_{f,g}(X) \big)$ for morphisms $X \xrightarrow{h} Y$ in $\C$.
+\end{itemize}
+If this functor $E_{f,g}$ is representable, then its representing object $E$ and its universal element $E \xrightarrow{e} A$ make the all subdiagrams in the diagram
+\[
+\begin{tikzcd}
+E \arrow[rr, "e"]                                   &  & A \arrow[rr, "f", shift left] \arrow[rr, "g"', shift right] &  & B \\
+                                                    &  &                                                             &  &   \\
+X \arrow[rruu, "h"'] \arrow[uu, "\exists!", dashed] &  &                                                             &  &  
+\end{tikzcd}
+\]
+commute for any $X \in \ob\C$ and any $h \in E_{f,g}(X)$. In this case, we call the morphism $E \xrightarrow{e} A$ the \uline{equaliser of $f$ and $g$}. The notion of equalisers still makes perfect sense even if we are not in a locally small category. As with products, we can still make sense of the notion of an equaliser even if the ambient category is \textit{not} locally small, by translating it into its elementary definition using the diagram above. Also, if the category \textit{is} locally small and the pair of morphisms $f,g$ have an equaliser in the sense of the elementary definition, then the functor $E_{f,g}$ will be representable with the equaliser of $f$ and $g$ as its universal element.
+
+Observe that equalisers are necessarily monomorphisms. The converse is not true; this occurs in, for example, the category $\mathbf{Top}$. If a monomorphism does in fact occur as an equaliser, we call it a \uline{regular monomorphism}.
+
+Dually\footnote{For completeness, here are the full definitions in elementary terms. Given a pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in a category $\C$, a \uline{coequaliser for $f$ and $g$} is a morphism $B \xrightarrow{e} E$ in $\C$ such that $ef = eg$, and that for any other morphism $B \xrightarrow{h} X$ in $\C$ satisfying $hf = hg$ there exists a unique morphism $E \xrightarrow{k} X$ such that $ke = h$. A \uline{regular epimorphism} is an epimorphism which occurs as a coequaliser of some parallel pair of morphisms.}, we have the notions of \uline{coequalisers} and \uline{regular epimorphisms}.
+
+Given a category $\C$ which has products and equalisers, a \uline{pullback} of a pair of (not necessarily distinct) morphisms forming a \uline{cospan}
+\[
+\begin{tikzcd}
+                  & A \arrow[d, "f"] \\
+B \arrow[r, "g"'] & C               
+\end{tikzcd}
+\]
+in $\C$ is an equaliser of the pair of morphisms $A \times B \substack{\xrightarrow{f\pi_1} \\ \xrightarrow[g\pi_2]{}} C$, where $A \xleftarrow{\pi_1} A \times B \xrightarrow{\pi_2} B$ are the projection morphisms from the product $A \times B$. The pullback $P \xrightarrow{e} A \times B$ makes all subdiagrams in the diagram
+\[
+\begin{tikzcd}
+X \arrow[rrd, "h", bend left] \arrow[rdd, "k"', bend right] \arrow[rd, "\exists!", dashed] &  & \\ & P \arrow[r, "\pi_1 e"] \arrow[d, "\pi_2 e"'] & A \arrow[d, "f"] \\ & B \arrow[r, "g"'] & C 
+\end{tikzcd}
+\]
+commute for any pair of morphisms $B \xleftarrow{k} X \xrightarrow{h} A$ in $\C$ satisfying $fh = gk$. We typically refer to the morphisms $B \xleftarrow{\pi_2 e} P \xrightarrow{\pi_1 e} A$ by simply $B \xleftarrow{p_2} P \xrightarrow{p_1} A$, and call $B \xleftarrow{p_2} P \xrightarrow{p_1} A$ the pullback.
+
+Dually\footnote{For completeness, here is the full definition in elementary terms. Given a \uline{span} $B \xleftarrow{f} A \xrightarrow{g} C$ in a category $\C$, a \uline{pushout of $f$ and $g$} is a pair of morphisms $B \xrightarrow{p_1} P \xleftarrow{p_2} C$ such that $p_1 f = p_2 g$, and for any other pair of morphisms $B \xrightarrow{h} X \xleftarrow{k} C$ satisfying $hf = kg$, there exists a unique morphism $P \xrightarrow{m} X$ such that $m p_1 = h$ and $m p_2 = k$.}, we have the notion of a \uline{pushout}.
+
+Again, fix a locally small category $\C$. Define the functor $I \colon \C \to \Set$ as follows:
+\begin{itemize}
+	\item on objects, $I(A) \coloneqq \{\bullet\}$ for all $A \in \ob\C$, where $\{\bullet\}$ denotes any fixed singleton set;
+	\item on morphisms, $I(f) \coloneqq \id_{\{\bullet\}}$ for all $f \in \mor\C$.
+\end{itemize}
+If this functor $I \colon \C \to \Set$ is representable, then letting $\varnothing \in \ob\C$ be its representing object, we have that $|\hom_\C(\varnothing, A)| = 1$ for all $A \in \ob\C$. In this case, we call $\varnothing$ the \uline{initial object in $\C$}.
+
+Dually\footnote{For completeness, here is the full definition in elementary terms. A \uline{terminal object} in a category $\C$ is an object $\mathbf 1$ such that for any $A \in \ob\C$ there exists a unique morphism $A \rightarrow \mathbf 1$ in $\C$.}, we have the notion of a \uline{terminal object}.
+
+All these notions satisfy a certain ``universal property'' which gives rise to a unique factorisation for any other object making the same commutative diagram. In a sense, objects satisfying these universal properties can be thought of as being the ``best'' object with a certain desired commuting property.
+
+
+
+
+\subsection{Family Separation Leaves an Impact}
+
+The Yoneda lemma (or more precisely, its corollary) essentially says that for a locally small category $\C$, if we know all the functors $\{\hom_\C(A, -)\}_{A\in\ob\C}$ then we know all there is to know about $\C$. But sometimes, we do not need to know \textit{all} the functors $\hom_\C(A,-)$, but only some of them.
+
+\begin{definition*}
+	Let $\C$ be a locally small category and let $\mathcal G \subseteq \ob\C$. We say that:
+	\begin{itemize}
+		\item $\mathcal G$ is a \uline{separating}/\uline{generating} family of objects if the family of functors $\{\hom_\C(G, -)\}_{G \in \mathcal G}$ are \uline{collectively faithful}, meaning that if morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$ satisfy $\hom_\C(G, f) = \hom_\C(G, g)$ for all $G \in \mathcal G$ then $f = g$;
+		\item $\mathcal G$ is a \uline{detecting} family of objects if the family of functors $\{\hom_\C(G,-)\}_{G \in \mathcal G}$ \uline{collectively reflect isomorphisms}, meaning that if a morphism $A \xrightarrow{f} B$ in $\C$ is such that $\hom_\C(G, f)$ is an isomorphism in $\Set$ for all $G \in \mathcal G$ then $f$ is also an isomorphism.
+	\end{itemize}
+\end{definition*}
+
+If the collection $\mathcal G$ above is a singleton, then we use the terms \uline{separator} and \uline{detector} in place of ``separating family'' and ``detecting family'' respectively.
+
+These two definitions are \textit{not} equivalent, but they are very closely related to each other. Fix a locally small category $\C$. If any two parallel pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$ has an equaliser, then any detecting family in $\C$ is also separating. If, instead, $\C$ is balanced (i.e. all morphisms in $\C$ which are both monic and epic are also isomorphisms), then any separating family is also detecting.
+
+Dually\footnote{For completeness, here are the full definitions. Let $\C$ be a locally small category and let $G \subseteq \ob\C$. We say that $\mathcal G$ is a \uline{coseparating family} if the family of functors $\{\hom_\C(-,G)\}_{G \in \mathcal G}$ are collectively faithful. We say that $\mathcal G$ is a \uline{codetecting family} if the family of functors $\{\hom_\C(-,G)\}_{G \in \mathcal G}$ collectively reflect isomorphisms.}, we have the notions of a \uline{coseparating} and \uline{codetecting} family of objects in a locally small category. The notion of a coseparating family of objects will come in handy later in the special adjoint functor theorem.
+
+
+
+
+
+
+
+
+
+\clearpage \newpage
+\section{Limits}
+
+\subsection{Hang On. There’s a Formal Definition of the Word ``Diagram’’?}
+
+\begin{definition*}
+	Let $\C$ and $J$ be categories. A \uline{diagram of shape $J$ in $\C$} is a functor $D \colon J \to \C$. The objects $\{D(j)\}_{j \in \ob J}$ are called the \uline{vertices} of the diagram $D$, and the morphisms $\{D(f)\}_{f \in \mor J}$ are called the \uline{edges} of the diagram $D$.	
+\end{definition*}
+
+
+
+
+
+\subsection{A Cocone Is a Ne}
+
+Let $D \colon J \to \C$ be a diagram. A \uline{cone over $D$} consists of the following data:
+\begin{itemize}
+	\item an \uline{apex} $A \in \ob\C$;
+	\item a collection of \uline{legs} $\left\{A \xrightarrow{\lambda_j} D(j)\right\}_{j\in\ob J} \subseteq \mor\C$ which are \uline{compatible} with the edges of $D$, i.e. the diagram
+		\[
+\begin{tikzcd}
+                         & A \arrow[ldd, "\lambda_j"'] \arrow[rdd, "\lambda_k"] &      \\
+                         &                                                      &      \\
+D(j) \arrow[rr, "D(e)"'] &                                                      & D(k)
+\end{tikzcd}
+		\]
+		commutes for all morphisms $j\xrightarrow{e}k$ in $J$.
+\end{itemize}
+Given a diagram $D \colon J \to \C$, we can form the category $\operatorname{Cone}(D)$ whose objects are cones over $D$ and whose morphisms $(A, \{\lambda_j\}_{j \in \ob J}) \xrightarrow{f} (B, \{\mu_j\}_{j \in \ob J})$ are morphisms $A \xrightarrow{f} B$ in $\C$ making the diagram
+\[
+\begin{tikzcd}
+A \arrow[rdd, "\lambda_j"'] \arrow[rr, "f"] &      & B \arrow[ldd, "\mu_j"] \\
+                                            &      &                        \\
+                                            & D(j) &                       
+\end{tikzcd}
+\]
+commute for all $j \in \ob J$.
+
+Dually\footnote{For completeness, here are the full definitions. Fix a diagram $D \colon J \to \C$. A \uline{cocone under $D$} consists of the following data:
+\begin{itemize}
+	\item a \uline{nadir} $N \in \ob\C$;
+	\item a collection of \uline{legs} $\left\{D(j) \xrightarrow{\lambda_j} N\right\}_{j\in\ob J} \subseteq \mor\C$ such that $\lambda_j = \lambda_k D(e)$ for all morphisms $j \xrightarrow{e} k$ in $J$.
+\end{itemize}
+The category $\operatorname{Cocone}(D)$ is then the category whose objects are cocones under $D$, and whose morphisms $(A, \{\lambda_j\}_{j \in \ob J}) \xrightarrow{f} (B, \{\mu_j\}_{j \in \ob J})$ are morphisms $A \xrightarrow{f} B$ in $\C$ such that $\mu_j = f\lambda_j$ for all $j\in\ob J$.}, we have the notion of \uline{cocones}\footnote{Some people use the term \uline{cone \textit{under} $D$} to refer to cocones under a diagram $D \colon J \to \C$. Personally, I don't like this, as the two distinct concepts would only be differentiated from insignificant-sounding words such as ``over'' and ``under''. I would much rather deal with the silliness of the name ``cocone''.} and the category $\operatorname{Cocone}(D)$ of a diagram $D \colon J \to \C$. 
+
+
+\begin{definition*}
+A \uline{(categorical) limit} for a diagram $D \colon J \to \C$ is a terminal object in the category $\operatorname{Cone}(D)$. A \uline{(categorical) colimit} for a diagram $D \colon J \to \C$ is an initial object in the category $\operatorname{Cocone}(D)$.	
+\end{definition*}
+
+Limits and colimits, if they exist, are unique up to isomorphism. Thus we may speak of \textit{the} limit and \textit{the} colimit of a diagram, if they exist.
+
+Using limits and colimits, we can generalise the notions of categorical products and coproducts from before. If $J$ is a (small) \uline{discrete category}, i.e. the only morphisms in $J$ are the identity morphisms, and $D \colon J \to \C$ is a diagram, then we define the \uline{(categorical) product} $\prod_{j\in\ob J} D(j)$ to be the limit of $D$, if it exists. Dually, the \uline{(categorical) coproduct} $\sum_{j\in\ob J} D(j)$ is defined to be the colimit of $D$. In the case where $J$ is a discrete category with two objects, these notions coincide with products and coproducts from before: a (binary) coproduct is a limit of a diagram of the shape
+\[
+	\begin{tikzcd}
+	\bullet & \bullet
+\end{tikzcd}
+\]
+whereas a coproduct is a colimit of a diagram of the above shape. In fact, we can recast equalisers, coequalisers, pullbacks, and pushouts all as limits or colimits of certain diagrams. Equalisers are limits of diagrams of the shape
+\[
+\begin{tikzcd}
+	\bullet & \bullet
+	\arrow[shift left, from=1-1, to=1-2]
+	\arrow[shift right, from=1-1, to=1-2]
+\end{tikzcd}
+\]
+and coequalisers are colimits of a diagram of the above shape. Pullbacks are limits of diagrams of the shape
+\[
+\begin{tikzcd}
+	& \bullet \\
+	\bullet & \bullet
+	\arrow[from=1-2, to=2-2]
+	\arrow[from=2-1, to=2-2]
+\end{tikzcd}
+\]
+and pushouts are colimits of diagrams of the shape
+\[
+\begin{tikzcd}
+	\bullet & \bullet \\
+	\bullet
+	\arrow[from=1-1, to=1-2]
+	\arrow[from=1-1, to=2-1]
+\end{tikzcd}
+\]
+
+Let us see some interplay between limits and some universal properties. To reduce the word count in the results that follow, we say that:
+\begin{itemize}
+	\item a category $\C$ \uline{has (co)equalisers} if any two morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ have an (co)equaliser;
+	\item a category $\C$ \uline{has pullbacks (resp. pushouts)} if any two morphisms $A \xrightarrow{f} C \xleftarrow{g} B$ (resp. $B \xleftarrow{f} A \xrightarrow{g} C$) has a pullback (resp. pushout);
+	\item a category $\C$ \uline{has all (co)products of shape $J$}, where $J$ is a category, if any diagram $D \colon J \to \C$ has a (co)product;
+	\item a category $\C$ \uline{has all (co)limits of shape $J$}, where $J$ is a category, if any diagram $D \colon J \to \C$ has a (co)limit.
+\end{itemize}
+We say that a category \uline{has all small (co)limits} if it has (co)limits of shape $J$ for all small categories $J$. The notion of a category \uline{having all finite (co)limits} is defined similarly, where a \uline{finite category} is a category $J$ where $\ob J$ and $\mor J$ are both finite. Similarly we have the notion of a category \uline{having all finite (co)products} and \uline{having all small (co)products}.
+
+
+\begin{lemma*}
+	Let $\C$ be a category. Then $\C$ has all finite limits if and only if $\C$ has equalisers and all finite products.
+\end{lemma*}
+\begin{proof}
+	The forward direction simply follows from equalisers and products being able to be reformulated as limits. So we only need to prove the converse.
+
+	But instead of providing a proof, we will instead give an easily generalisable example with the diagram $A \xrightarrow{\varepsilon} B$ (with the identity morphisms) in $\C$. Let $A \times B \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} A \times B \times B$ be the induced morphisms as below, using the universal property of products
+\[
+\begin{tikzcd}
+E \arrow[r, "e"] & A \times B \arrow[rrr, "\pi_A" description, bend left] \arrow[rrrr, "\pi_B" description, bend left=49] \arrow[rrrrr, "\pi_B" description, bend left=60] \arrow[rrrd, "\pi_A" description, bend right] \arrow[rrrrrrrr, "f", dashed, bend left=67] \arrow[rrrrrrrr, "g"', dashed, bend right=71] \arrow[rrrrrd, "\pi_B" description, bend right=49] &  &  & A                                               & B & B                    &  &  & A \times B \times B \arrow[lllll, "p_A"', bend right] \arrow[llll, "p_B", bend right] \arrow[lll, "p_B"'] \\
+                 &                                                                                                                                                                                                                                                                                                                                                    &  &  & A \arrow[u, "\id_A"] \arrow[ru, "\varepsilon"'] &   & B \arrow[u, "\id_B"] &  &  &                                                                                                          
+\end{tikzcd}
+\]
+and let $E \xrightarrow{e} A \times B$ be the equaliser of $f$ and $g$. Then $(E, \{\pi_A e, \pi_B e\})$ is a cone over the diagram $A \xrightarrow{\varepsilon} B$. But any other cone over $A \xrightarrow{\varepsilon} B$ is also, in particular, a cone over the discrete diagram 
+\[
+	\begin{tikzcd}
+	A & B
+\end{tikzcd}
+\]
+and so it factors uniquely through $A \times B$, whence it factors uniquely through $E \xrightarrow{e} A \times B$.
+
+The general proof goes as follows:
+\[
+\lim_J D \cong \operatorname{eq}\Big( \begin{tikzcd}
+\prod_{j\in \ob J} D(j) \arrow[r, shift left=2] \arrow[r, shift right=2] & \prod_{(j \rightarrow k) \in \mor J} D(k)
+\end{tikzcd} \Big)\,. \qedhere
+\]
+\end{proof}
+
+We remark that the lemma above carries through, with the same proof strategy, if we replace all instances of ``finite'' with ``small''.
+
+Dually, if a category has coequalisers and finite (resp. small) coproducts, then it also has finite (resp. small) colimits.
+
+If a category $\C$ has pullbacks and a terminal object $1$, then $\C$ would have equalisers and finite products, and so $\C$ would have finite limits. Indeed, given any $A, B \in \C$, the pullback of the cospan
+\[
+\begin{tikzcd}
+            & A \arrow[d] \\
+B \arrow[r] & 1          
+\end{tikzcd}
+\]
+is simply the product $A \times B$. So we can inductively construct finite products in $\C$ using pullbacks. Then given any two morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$, the equaliser of $f$ and $g$ can be obtained by considering the pullback of the cospan
+\[
+\begin{tikzcd}
+                             & A \arrow[d, "{(\id_A, f)}"] \\
+A \arrow[r, "{(\id_A, g)}"'] & A \times B                 
+\end{tikzcd}
+\]
+
+
+
+
+
+
+
+
+
+
+\subsection{Continuity. Well... Not Quite. Eh.}
+
+Though categorical limits are rather far removed from limits in topology, lots of terminology was taken from there.
+
+\begin{definition*}
+A category is \uline{(co)complete} if it has all small (co)limits.
+\end{definition*}
+
+We can play around with limits and functors and arrive at three different definitions for how functors treat limits. A warning: the definition below for ``creates limits'' is slightly non-standard.
+
+\begin{definition*}
+	Let $F \colon \C \to \D$ be a functor. Let $J$ be a category, and suppose that both $\C$ and $\D$ have limits of shape $J$. We say that:
+	\begin{itemize}
+		\item \uline{$F$ preserves limits of shape $J$} if for all diagrams $D \colon J \to \C$ and all limits $(L, \{\lambda_j\}_{j\in\ob J})$ for $D$ in $\C$, the pair $(FL, \{F\lambda_j\}_{j \in \ob J})$ is a limit for the diagram $FD \colon J \to \D$;
+		\item \uline{$F$ reflects limits of shape $J$} if for all diagrams $D \colon J \to \C$ and all cones $(L, \{\lambda_j\}_{j\in\ob J})$ over $D$, if $(FL, \{F\lambda_j\}_{j\in\ob J})$ is a limit for the diagram $FD$ then $(L, \{\lambda_j\}_{j\in\ob J})$ is a limit for $D$;
+		\item \uline{$F$ creates limits of shape $J$} if for all diagrams $D \colon J \to \C$ and all limits $(M, \{\mu_j\}_{j\in\ob J})$ for the diagram $FD$, there exists a cone $(L, \{\lambda_j\}_{j\in\ob J})$ for $D$ such that
+			\[
+				(FL, \{F\lambda_j\}_{j\in\ob J}) \cong (M, \{\mu_j\}_{j\in\ob J}) \text{ in } \operatorname{Cone}(FD)\,,
+			\]
+			and that any such cone $(L, \{\lambda_j\}_{j\in\ob J})$ is a limit for $D$.
+	\end{itemize}
+	We say that $F$ is \uline{(co)continuous} if $F$ preserves all small (co)limits.
+\end{definition*}
+
+In general, when we say a functor $F \colon \C \to \D$ ``preserves items with a property $\varphi$'', we mean that if $x \in \C$ (that is, $x$ could be an object or a morphism) is such that $x$ satisfies $\varphi$, then $Fx$ also satisfies $\varphi$. Similarly, when we say ``$F$ reflects items with property $\varphi$'', we mean that if $x \in \C$ is such that $Fx$ satisfies $\varphi$, then $x$ itself also satisfies $\varphi$. And we say that ``$F$ creates items with property $\varphi$'' to mean that if $y \in \D$ has property $\varphi$ then there is some $x \in \C$ with property $\varphi$ such that $Fx \cong y$.
+
+Observe that the creation of limits of shape $J$ is equivalent to the preservation and reflection of limits of shape $J$. Consequently, we have the following interplay between limits of categories between functors.
+
+\begin{proposition*}
+	Suppose that categories $\C$ and $\D$ have equalisers and all finite products, and let $F \colon \C \to \D$ be a functor. If $F$ preserves equalisers and all finite products, then $F$ preserves all finite limits.
+\end{proposition*}
+\begin{proof}
+We know already know that $\C$ and $\D$ will have all finite limits. But also, for any limit $L$ of a finite diagram $D \colon J \to \C$, we can construct an isomorphic copy of $L$ in $\C$ as an equaliser of a pair morphisms from a product to a product. Taking the image of this under $F$, by assumption, also yields an equaliser of the appropriate products, and so we get a limit for $FD$.
+\end{proof}
+
+Rather similarly, if we replace all instances of the word ``preserves'' with ``creates'', then the result still holds. And again, both results (the preservation result and the creation result) carry through if we replace all instances of ``finite'' with ``small''.
+
+
+
+
+
+
+
+
+\subsection{\#NoFilter}
+
+\begin{definition*}
+A category $\C$ is a \uline{filtered category} if all of the following three properties hold:
+\begin{itemize}
+	\item $\ob\C$ is non-empty;
+	\item for any $A,B \in \ob\C$, there exist $C \in \ob\C$ and morphisms $\begin{tikzcd}
+	& A \\
+	B & C
+	\arrow[from=1-2, to=2-2]
+	\arrow[from=2-1, to=2-2]
+\end{tikzcd}$ forming a cospan;
+	\item for any parallel pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$, there exist $C \in\ob\C$ and a morphism $B \xrightarrow{h} C$ such that $hf = hg$.
+\end{itemize}
+\end{definition*}
+
+Evidently, a category having all finite colimits implies that it is filtered. But the converse need not hold.
+
+An equivalent characterisation for filtered categories is that a category $\C$ is filtered if and only if every finite diagram in $\C$ has a cocone under it. This is clearly a sufficient requirement for $\C$ to be filtered, since all each of the three properties in the definition of a filtered category are instances of cocones under finite diagrams (with the non-empty condition be satisfied by considering a cocone under the empty diagram). To see that a filtered category $\C$ always has cocones under finite diagrams, inductively construct a cocone on the vertices and edges of a finite diagram using the cospan and equalisers available in $\C$.
+
+Dually\footnote{For completeness, here is the full definition. A category $\C$ is said to be \uline{cofiltered} if $\C^\op$ is filtered. In other words, $\C$ is cofiltered if and only if for every finite diagram in $\C$ has a cone over it.}, we have the notion of a \uline{cofiltered category}.
+
+A category $\C$ is a \uline{preorder} if for all $A,B\in\ob\C$, the collection $\hom_\C(A,B)$ is either empty or a singleton set. A filtered preorder is often called a \uline{directed preorder}.
+
+\begin{definition*}
+	Let $\C$ be a category. We say that:
+	\begin{itemize}
+		\item \uline{$\C$ has filtered colimits} if $\C$ has colimits of shape $J$ for every small filtered category $J$;
+		\item \uline{$\C$ has directed colimits} if $\C$ has colimits of shape $J$ for every small directed preorder $J$.
+	\end{itemize}
+\end{definition*}
+
+
+\begin{proposition*}
+Let $\C$ be a category, and assume that $\C$ has all finite colimits and has directed colimits. Then $\C$ has all small colimits (i.e. $\C$ is cocomplete).
+\end{proposition*}
+\begin{proof}
+	By assumption, $\C$ has coequalisers (because coequalisers can be recast as finite colimits). So we just need to show that $\C$ has all small coproducts to conclude that $\C$ has all small colimits.
+	
+	We can form finite coproducts since $\C$ has finite colimits (because coproducts can be recast as colimits). Now given a \textit{small} diagram in $\C$, create a directed preorder diagram of all the finite coproducts of that diagram, ordered in the obvious way (think inclusion). Then take the colimit of this directed preorder to obtain the coproduct.
+\end{proof}
+
+Let $I$ and $J$ be small categories, and let $\C$ be a category which has all limits of shape $I$ and has all colimits of shape $J$. Given a diagram $D \colon I \times J \to \C$, there is a canonical morphism
+\[
+ \colim_J \lim_I D \longrightarrow \lim_I \colim_J D
+\]
+in $\C$. For example, if $D \colon I \times J$ is of the form
+\[
+\begin{tikzcd}
+{D(i,j')} \arrow[r]          & {D(i',j')}          \\
+{D(i,j)} \arrow[u] \arrow[r] & {D(i',j)} \arrow[u]
+\end{tikzcd}
+\]
+then the canonical morphism $\colim_J \lim_I D \longrightarrow \lim_I \colim_J D$ is the morphism induced in the diagram below:
+
+\adjustbox{scale=0.8,left}{
+\begin{tikzcd}
+                                     &                                          &                                                    &                                               & {\lim_I\big(D(-,j')\big)} \arrow[lddd] \arrow[llld] \arrow[lld]         \\
+                                     & {D(i,j')} \arrow[r] \arrow[lddd]         & {D(i',j')} \arrow[lddd]                            &                                               & {\lim_I\big(D(-,j)\big)} \arrow[ldd] \arrow[u] \arrow[llld] \arrow[lld] \\
+                                     & {D(i,j)} \arrow[u] \arrow[r] \arrow[ldd] & {D(i',j)} \arrow[u] \arrow[ldd]                    &                                               &                                                                         \\
+                                     &                                          & \lim_I \colim_J D \arrow[ld] \arrow[lld] & \colim_J\lim_I D \arrow[l, dashed] &                                                                         \\
+{\colim_J\big(D(i,-)\big)} \arrow[r] & {\colim_J\big(D(i',-)\big)}              &                                                    &                                               &                                                                        
+\end{tikzcd}
+}
+\newline
+
+\noindent If for all diagrams $D \colon I \times J \to \C$ the induced morphism $\colim_J \lim_I D \longrightarrow \lim_I \colim_J D$ is an isomorphism in $\C$, then we say that \uline{limits of shape $I$ commute with colimits of shape $J$ in $\C$}. Equivalently, this is saying that the functor $\lim_I \colon [I,\C] \to \C$ preserves colimits of shape $J$. Another equivalent formulation is that the functor $\colim_J \colon [J,\C] \to\C$ preserves limits of shape $I$.
+
+What are limits and colimits in the category $\Set$? The apex of the limit of a \textit{small} diagram $D \colon J \to \Set$ is (isomorphic to) the largest subset of the $\prod_{j\in\ob J} D(j)$ which forms a cone over the diagram $D$ using the restricted projection maps as legs. The nadir of the colimit of a \textit{small} diagram $D \colon J \to \Set$ is (isomorphic to) the set $\big(\bigsqcup_{j\in\ob J} D(j)\big)/\sim$ where $\sim$ is the smallest equivalence relation identifying $x \in D(j)$ with $y \in D(k)$ if there is a morphism $j \xrightarrow{e} k$ in $J$ such that $(De)(x) = y$.
+
+\begin{theorem*}
+	Let $J$ be a small category. Then $J$ is filtered if and only if all finite limits commute with colimits of shape $J$ in $\Set$.
+\end{theorem*}
+\begin{proof}
+	The forward direction asserts that the induced functions are bijections. Just do it. The function sends an equivalence class $[(x_1,\dots,x_n)] \in \colim_J \lim_I D$ to the tuple of equivalence classes $([x_1], \dots, [x_n]) \in \lim_I \colim_J D$. It may be helpful to know that, because $J$ is filtered, if $D \colon J \to \Set$ is a diagram then for $j,k\in\ob J$, and $x \in D(j)$ and $y \in D(k)$, we have that $x$ and $y$ lie in the same equivalence class in $\colim_J D$ if and only if there exists a cospan $\begin{tikzcd}
+	& j \\
+	k & l
+	\arrow["f", from=1-2, to=2-2]
+	\arrow["g", from=2-1, to=2-2]
+\end{tikzcd}$ in $J$ satisfying $(Df)(x) = (Dg)(y)$.
+	
+	For the reverse direction, let $I$ be a finite category and let $D \colon I \to J$ be a diagram. Define a diagram $E \colon I^\op \times J \to \Set$ as follows:
+	\begin{itemize}
+		\item on objects, $E(i,j) \coloneqq \hom_J(D(i), j)$;
+		\item on morphisms, $E(i \xleftarrow{e} i', j \xrightarrow{f} j')$ is defined to be the function
+			\[
+				\hom_J(D(i), j) \xrightarrow{f \circ - \circ D(e)} \hom_J(D(i'), j')\,.
+			\]
+	\end{itemize}
+	For any $i \in \ob I$, the (nadir of the) colimit of the diagram $E(i,-) \colon J \to \Set$ is a singleton set since, in the colimit, any morphism $D(i) \xrightarrow{f} j$ in $J$ is identified with the identity morphism $\begin{tikzcd}
+D(i) \arrow["\id_{D(i)}", loop, distance=2em, in=325, out=35]
+\end{tikzcd}$ in $J$. Indeed,
+\[
+\begin{tikzcd}
+{\hom_J(D(i),D(i))} \arrow[rr, "f \circ - \circ D(\id_i)"] &  & {\hom_J(D(i),j)} \\
+\id_{D(i)} \arrow[rr, maps to]                             &  & f               
+\end{tikzcd}
+\]
+Hence (the apex of) $\lim_{I^{\op}} \colim_J E$ is also a singleton. Thus, by assumption, $\colim_J \lim_{I^\op} E$ is a singleton. In particular, it is non-empty. So $\lim_{I^\op} E(-, j)$ is non-empty for some $j \in \ob J$. An element of $\lim_{I^\op} E(-,j)$ is simply the collection of legs of a cocone under $D$ with nadir $j$. Hence $J$ is filtered.
+\end{proof}
+
+We will now make a temporary definition, which we will generalise in the next section on adjunctions, but is sufficient for the sake of the next proposition. Let $\mathbf 1 = \{*\} \in \ob\Set$ be a singleton set. Let $\C$ be a category and let $F \colon \C \to \Set$ be a functor. Define the \uline{category of elements of $F$}, denoted $(\mathbf 1 \downarrow F)$, as follows:
+\begin{itemize}
+	\item its objects are pairs $(A, x)$ with $A \in \ob\C$ and $x \in FA$;
+	\item its morphisms $(A,x) \xrightarrow{f} (B,y)$ are morphisms $f \in \hom_\C(A,B)$ such that $(Ff)(x) = y$;
+	\item composition in $(\mathbf 1 \downarrow F)$ is composition in $\C$.
+\end{itemize}
+
+\begin{proposition*}
+	Let $\C$ be a small category which has all finite limits, and let $F \colon \C \to \Set$ be a functor. Then $F$ preserves all finite limits if and only if the category $(\mathbf 1 \downarrow F)$ is cofiltered.
+\end{proposition*}
+\begin{proof}
+	We start with the forward direction. Denote by $U \colon (\mathbf 1 \downarrow F) \to \C$ the \uline{forgetful functor}, which sends $(A,x) \in \ob(\mathbf 1 \downarrow F)$ to $A \in \ob\C$ and sends $f \in \mor(\mathbf 1 \downarrow F)$ to $f \in \mor\C$. Suppose we have a finite category $J$ and a diagram $D \colon J \to (\mathbf 1 \downarrow F)$, and let $(L, \{\lambda_j\}_{j\in\ob J})$ be the limit cone over $UD \colon J \to \C$. We have two ways of getting a cone over the diagram $FUD \colon J \to \Set$.
+	\begin{itemize}
+		\item Since $F$ preserves limits, $(FL, \{F\lambda_j\}_{j\in\ob j})$ is a limit cone over $FUD$.
+		\item Writing the vertices of the diagram $D \colon J \to (\mathbf 1 \downarrow F)$ as $\{(A_j, x_j)\}_{j \in \ob J}$, then $(\mathbf 1, \{\mathbf 1 \xrightarrow{* \mapsto x_j} A_j\}_{j\in\ob J})$ is a cone over the diagram $FUD \colon J \to \Set$.
+	\end{itemize}
+	So we get an induced function $h \colon \mathbf 1 \to FL$. In particular, $FL$ is non-empty; it has an element $h(*)$. Then $\big((L, h(*)), \{\lambda_j\}_{j\in\ob J}\big)$ is a (limit) cone over $D \colon J \to (\mathbf 1 \downarrow F)$. Hence $(\mathbf 1 \downarrow F)$ is cofiltered.
+	
+	Now for the reverse direction. Suppose that every finite diagram in $(\mathbf 1 \downarrow F)$ has a cone over it. Let $D \colon J \to \C$ be a finite diagram with a limit cone $(L, \{\lambda_j\}_{j\in\ob J})$, and let $(M, \{\mu_j\}_{j \in \ob J})$ be a limit cone over $FD \colon J \to \Set$. This gives us an induced function $f \colon FL \to M$. Now for any element $x \in M$, define a diagram $D_x \colon J \to (\mathbf 1 \downarrow F)$ by:
+	\begin{itemize}
+		\item $D_x j \coloneqq (Dj, \mu_j(x))$, for $j \in \ob J$;
+		\item $D_x e \coloneqq De$, for $e \in \mor J$.
+	\end{itemize}
+	Then, by assumption, the diagram $D_x$ has some cone $((K, y), \{\kappa_j\}_{j\in\ob J})$ over it. Now observe that $(K, \{\kappa_j\}_{j \in \ob J})$ is a cone over $D \colon J \to \C$, so we get an induced morphism $K \xrightarrow{k} L$ in $\C$, and we define $f^{-1}(x) \coloneqq (Fk)(y)$. Then the function $f^{-1} \colon M \to FL$ is the inverse to $f \colon FL \to M$ in $\Set$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+\clearpage \newpage
+\section{Adjunctions}
+
+\subsection{Say the Words ``Left Adjoint'' to Lose Half the People in the Room}
+
+\begin{definition*}
+	Let $\C$ and $\D$ be categories, and let $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ be functors. We say that \uline{$F$ is left adjoint to $G$}, and that \uline{$G$ is right adjoint to $F$}, and write $F \dashv G$, if there exists a bijection
+	\[
+		\varphi_{A,B} \colon \hom_\C(A, GB) \to \hom_\D(FA, B)
+	\]
+	which is natural in $A$ and $B$, for any $A \in \ob\C$ and $B \in \ob\D$.
+\end{definition*}
+
+Naturality here means that the square
+\[
+\begin{tikzcd}
+{\hom_\C(A, GB)} \arrow[rr, "{\varphi_{A,B}}", "\cong"'] \arrow[dd, "{Gg \circ - \circ f}"'] &  & {\hom_\D(FA, B)} \arrow[dd, "{g \circ - \circ Ff}"] \\
+                                                                                                     &  &                                                                        \\
+{\hom_\C(A', GB')} \arrow[rr, "{\varphi_{A',B'}}", "\cong"']                                                  &  & {\hom_\D(FA', B')}                                                    
+\end{tikzcd}
+\]
+	commutes for any morphisms $A \xleftarrow{f} A'$ in $\C$ and $B \xrightarrow{g} B'$ in $\D$.
+
+In other words, we have that $F \dashv G$ if and only if the functor $\hom_\C(-,G-)$ is naturally isomorphic to the functor $\hom_\D(F-, -)$.
+
+
+
+
+
+
+\subsection{... and the Words ``Right Adjoint'' to Lose the Other Half}
+
+The first two propositions below establish the uniqueness of adjoint functors up to natural isomorphism.
+
+\begin{lemma*}
+	Let $\begin{tikzcd}
+\C \arrow[r, "F", shift left=3] \arrow[r, "F'"', shift left] & \D \arrow[l, "G", shift left=3]
+\end{tikzcd}$ be functors with $F \dashv G$ and $F \cong F'$ in $[\C,\D]$. Then $F' 
+\dashv G$.
+\end{lemma*}
+\begin{proof}
+	For $A \in \ob\C$ and $B \in \ob\D$, we have natural bijections
+	\[
+		\hom_\C(A, GB) \xrightarrow[\cong]{F\dashv G} \hom_\D(FA, B) \xrightarrow[\cong]{F \cong F'} \hom_\D(F'A, B)\,. \qedhere
+	\]
+\end{proof}
+
+Similarly, if $\begin{tikzcd}
+\C \arrow[r, "F", shift left=3] & \D \arrow[l, "G"', shift left] \arrow[l, "G'", shift left=3]
+\end{tikzcd}$ are functors with $F \dashv G$ and $G \cong G'$ in $[\D,\C]$, then $F \dashv G'$. The converse to the previous proposition is also true.
+
+
+\begin{lemma*}
+	Let $\begin{tikzcd}
+\C \arrow[r, "F", shift left=3] \arrow[r, "F'"', shift left] & \D \arrow[l, "G", shift left=3]
+\end{tikzcd}$ be functors with $F \dashv G$ and $F' \dashv G$. Then $F \cong F'$ in $[\C,\D]$.
+\end{lemma*}
+\begin{proof}
+For each $A \in \ob\C$, let $FA \xrightarrow{\eta_A} F'A$ be the morphism obtained as follows:
+\[
+\begin{tikzcd}
+{\hom_\D(F'A,F'A)} \arrow[r, "F' \dashv G","\cong"'] & {\hom_\C(A, GF'A)} \arrow[r, "F \dashv G", "\cong"'] & {\hom_\D(FA,F'A)} \\
+\id_{F'A} \arrow[rr, maps to]           &                                  & \eta_A       
+\end{tikzcd}
+\]
+Then $\eta \colon F \to F'$ is a natural isomorphism.
+\end{proof}
+
+Similarly, if $\begin{tikzcd}
+\C \arrow[r, "F", shift left=3] & \D \arrow[l, "G"', shift left] \arrow[l, "G'", shift left=3]
+\end{tikzcd}$ are functors with $F \dashv G$ and $F \dashv G'$, then $G \cong G'$ in $[\D,\C]$. The previous two propositions allow us to talk about \textit{the} left adjoint functor and \textit{the} right adjoint functor, if they exist.
+
+Next, adjunctions can be composed.
+
+\begin{lemma*}
+Suppose we have adjoint functors $\begin{tikzcd}
+	\C & \D & {\mathcal E}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+	\arrow["H", shift left=2, from=1-2, to=1-3]
+	\arrow["\bot"{description}, draw=none, from=1-2, to=1-3]
+	\arrow["K", shift left=2, from=1-3, to=1-2]
+\end{tikzcd}$. Then $HF \dashv GK$.
+\end{lemma*}
+\begin{proof}
+		For $A \in \ob\C$ and $B \in \ob\mathcal E$, we have
+	\[
+		\hom_{\C}(A, GKB) \overset{F \dashv G}\cong \hom_\D(FA, KB) \overset{H \dashv K} \cong \hom_{\mathcal E}(HFA, B)\,. \qedhere
+	\]
+\end{proof}
+
+The previous two propositions give rise to the following: given a commutative square of categories and functors
+\[
+\begin{tikzcd}
+\mathcal B \arrow[r, "F"] \arrow[d, "G"'] & \C \arrow[d, "H"] \\
+\D \arrow[r, "K"']                & \mathcal E               
+\end{tikzcd}
+\]
+all of whom have left adjoints $F' \dashv F,\ \dots, \ K' \dashv K$, then the square
+\[
+\begin{tikzcd}
+\mathcal B                & \C \arrow[l, "F'"']                \\
+\D \arrow[u, "G'"] & \mathcal E \arrow[u, "H'"'] \arrow[l, "K'"]
+\end{tikzcd}
+\]
+commutes up to natural isomorphism, i.e. $F'H' \cong G'K'$ in $[\mathcal E, \mathcal B]$.
+
+
+
+
+
+
+
+
+
+
+\subsection{Are Adjoint Linear Operators Examples of Adjoint Functors?}
+
+No.
+
+
+
+
+
+
+
+
+
+
+\subsection{How Many Definitions Can One Concept Have?}
+
+There is a very common equivalent definition for functors $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ to form an adjunction with $F \dashv G$.
+
+\begin{theorem*}
+Let $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ be functors. Then $F \dashv G$ if and only if there exist natural transformations $\eta \colon \id_\C \to GF$, called the \uline{unit of the adjunction}, and $\varepsilon \colon FG \to \id_\D$, called the \uline{counit of the adjunction}, such that the diagrams
+\[
+\begin{tikzcd}
+F \arrow[rrdd, "\id_F"'] \arrow[rr, "F\eta"] &  & FGF \arrow[dd, "\varepsilon_F"] &  &  & G \arrow[rrdd, "\id_G"'] \arrow[rr, "\eta_G"] &  & GFG \arrow[dd, "G\varepsilon"] \\
+                                             &  &                                 &  &  &                                               &  &                                \\
+                                             &  & F                               &  &  &                                               &  & G                             
+\end{tikzcd}
+\]
+in $[\C,\D]$ and $[\D,\C]$ respectively commute. The two commutative diagrams above are called the \uline{triangular identities for $\eta$ and $\varepsilon$}.
+\end{theorem*}
+\begin{proof}
+	For the forward direction, we define the unit $\eta \colon \id_\C \to {GF}$ as follows: for $A \in \ob\C$
+	\[
+\begin{tikzcd}
+{\hom_\C(A, GFA)} & {\hom_\D(FA,FA)} \arrow[l, "\cong"'] \\
+\eta_A         & \id_{FA} \arrow[l, maps to]      
+\end{tikzcd}
+	\]
+	And we define the counit $\varepsilon \colon FG \to \id_\D$ as follows: for $B \in \ob\D$,
+	\[
+\begin{tikzcd}
+{\hom_\C(GB, GB)} \arrow[r, "\cong"] & {\hom_\D(FGB,B)} \\
+\id_{GB} \arrow[r, maps to]          & \varepsilon_B   
+\end{tikzcd}
+	\]
+	
+	For the converse direction, for $A \in \ob\C$ and $B\in\ob\D$, the assignments
+	\[
+\begin{tikzcd}
+{\hom_\C(A, GB)} \arrow[r, "\cong"] & {\hom_\D(FA, B)}     \\
+f \arrow[r, maps to]                & \varepsilon_B(Ff)    \\
+(Gg)\eta_A                          & g \arrow[l, maps to]
+\end{tikzcd}
+	\]
+	are the desired natural bijections for the adjunction.
+\end{proof}
+
+Sometimes, when we are given a functor $\C \xleftarrow[G]{} \D$ and we want to show that $G$ has a left adjoint functor $F \colon \C \to \D$, it may be annoying to actually construct such an $F$.
+
+\begin{definition*}
+	Let $\C \xleftarrow[G]{} \D$ be a functor, and let $A \in \ob\C$. We define the category $(A \downarrow G)$ to be the category whose:
+	\begin{itemize}
+		\item objects are pairs $(B,f)$ with $B \in \ob\D$ and $f \in \hom_{\C}(A, GB)$;
+		\item morphisms $(B,f) \overset{g}\rightarrow (B', f')$ are morphisms $g \in \hom_\D(B, B')$ such that the diagram
+			\[
+\begin{tikzcd}
+A \arrow[rr, "f"] \arrow[rrdd, "f'"'] &  & GB \arrow[dd, "Gg"] \\
+                                         &  &                       \\
+                                         &  & GB'                
+\end{tikzcd}
+			\]
+			in $\C$ commutes;
+		\item composition in $(A \downarrow G)$ is composition in $\D$.
+	\end{itemize}
+\end{definition*}
+
+Dually\footnote{For completeness, here is the full definition. Given a functor $F \colon \C \to \D$ and an object $B \in \ob\D$, we define the category $(F \downarrow B)$ to be the category whose objects are pairs $(A, g)$ with $A \in \ob\C$ and $g \in \hom_\D(FA, B)$, and whose morphisms $(A,g) \xrightarrow{f} (A', g')$ are morphisms $f \in \hom_\C(A, A')$ such that $g = g'(Ff)$.}, given a functor $\C \xrightarrow{F} \D$ and an object $B \in \ob\D$, we have the category $(F \downarrow B)$.
+
+\begin{lemma*}
+	Let $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ be adjoint functors. Then for each $A \in \ob\C$, the category $(A \downarrow G)$ has an initial object.
+\end{lemma*}
+\begin{proof}
+	Let $\eta \colon \id_\C \to GF$ be the unit of the adjunction. Fix $A \in \ob\C$. Obtain the morphism $A \xrightarrow{\eta_A} GFA$. Explicitly,
+	\[
+\begin{tikzcd}
+{\hom_\C(A, GFA)} & {\hom_\D(FA,FA)} \arrow[l, "\cong"'] \\
+\eta_A         & \id_{FA} \arrow[l, maps to]      
+\end{tikzcd}
+	\]
+	Then $(FA, \eta_A)$ is initial in the category $(A \downarrow G)$.
+\end{proof}
+
+
+\begin{lemma*}
+	Let $\C \xleftarrow[G]{} \D$ be a functor such that, for all $A \in \ob\C$, the category $(A \downarrow G)$ has an initial object. Define a functor $F \colon \C \to \D$ as follows:
+	\begin{itemize}
+		\item on objects, $FA$ is such that $(FA, \eta_A)$ is initial in $(A \downarrow G)$, for some morphism $A \xrightarrow{\eta_A} GFA$;
+		\item on morphisms, $F(A \xrightarrow{f} A')$ is the unique morphism in $\D$ giving rise to the morphism $(FA, \eta_{A}) \xrightarrow{Ff} (FA', \eta_{A'})$ in $(A \downarrow G)$, i.e. the one making the diagram
+			\[
+\begin{tikzcd}
+A \arrow[rr, "\eta_{A}"] \arrow[rrdd, "\eta_{A'}"'] &  & GFA \arrow[dd, "GFf"] \\
+                                         &  &                       \\
+                                         &  & GFA'                 
+\end{tikzcd}
+			\]
+			in $\C$ commute.
+	\end{itemize}
+	Then $F \dashv G$.
+\end{lemma*}
+\begin{proof}
+	For $A \in \ob\C$ and $B \in\ob\D$, the assignment
+	\[
+\begin{tikzcd}
+{\hom_\C(A, GB)} & {\hom_\D(FA, B)} \arrow[l, "\cong"'] \\
+(Gg)\eta_A       & g \arrow[l, maps to]                 
+\end{tikzcd}
+	\]
+	is the desired natural bijection for the adjunction, with $\eta$ is now the unit of the adjunction.
+\end{proof}
+
+The previous two lemmas give us the following characterisation of right adjoints.
+
+\begin{theorem*}
+	Let $\C \xleftarrow[G]{} \D$ be a functor. Then $G$ is a right adjoint if and only if there exists an initial object in the category $(A \downarrow G)$ for all $A \in\ob\C$.
+\end{theorem*}
+
+Dually, a functor $\C \xrightarrow{F} \D$ is a left adjoint if and only if there exists a terminal object in the category $(F \downarrow B)$ for all $B \in \ob\D$.
+
+
+
+
+\subsection{Chekhov’s Gun Goes Off}
+
+Recall the quirk in the definition of equivalence of categories, where the natural isomorphisms appear to pointlessly point in opposite directions? Every equivalence of categories is actually an adjoint equivalence!
+
+\begin{proposition*}
+	Let $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ be functors witnessing an equivalence of categories. Then $F \dashv G \dashv F$.
+\end{proposition*}
+\begin{proof}
+	Rerun the argument that if $F$ and $G$ are full, faithful, and essentially surjective, then we have an equivalence of categories. The obtained natural isomorphisms from that proof satisfy the triangular identities.
+\end{proof}
+
+\begin{proof}[Alternative Proof]
+	Let $\alpha \colon \id_\C \to GF$ and $\beta \colon FG \to \id_\D$ be natural isomorphisms. Noting that the squares
+	\[
+\begin{tikzcd}
+\id_\C \arrow[rr, "\alpha"] \arrow[dd, "\alpha"'] &  & GF \arrow[dd, "\alpha_{GF}"] &  &  & \id_\D                 &  & FG \arrow[ll, "\beta"']                              \\
+                                                  &  &                              &  &  &                        &  &                                                      \\
+GF \arrow[rr, "GF\alpha"']                        &  & GFGF                         &  &  & FG \arrow[uu, "\beta"] &  & FGFG \arrow[uu, "\beta_{FG}"'] \arrow[ll, "FG\beta"]
+\end{tikzcd}
+	\]
+	commute by the naturality of $\alpha$ and $\beta$, we define $\eta \coloneqq \alpha$ and define $\varepsilon \colon FG \to \id_\D$ to be the composite
+	\[
+\begin{tikzcd}
+FG \arrow[rr, "(FG\beta)^{-1}"] \arrow[rrrrrr, "\varepsilon", bend right] &  & FGFG \arrow[rr, "(F\alpha_G)^{-1}"] &  & FG \arrow[rr, "\beta"] &  & {\id_\D\,.}
+\end{tikzcd}
+	\]
+	Then $\eta$ and $\varepsilon$ satisfy the triangular identities to establish $F \dashv G$, and $\varepsilon^{-1}$ and $\eta^{-1}$ satisfy the triangular identities to establish $G \dashv F$.
+\end{proof}
+
+
+
+
+
+
+
+\subsection{Know Your Limits}
+
+For categories $\C$ and $J$, let $\Delta \colon \C \to [J,\C]$ be the functor which:
+\begin{itemize}
+	\item sends objects $A \in \ob\C$ to the \uline{constant diagram}, all of whose vertices are $A$ and edges are $\id_A$;
+	\item sends morphisms $A \xrightarrow{f} B$ in $\C$ to the natural transformation from $\Delta A$ to $\Delta B$ which sends objects $j \in \ob J$ to the morphism $(\Delta A)j = A \xrightarrow{f} B = (\Delta B)j$.
+\end{itemize}
+Then for a diagram $D \colon J \to \C$, specifying the legs of a cone $(A, \{\lambda_j\}_{j \in \ob J})$ over $D$ is equivalent to specifying a natural transformation from $\Delta A$ to $D$. If one stares at the definitions carefully, they will notice that $\operatorname{Cone}(D)$ is just another name for $(\Delta \downarrow D)$. Consequently, $\Delta$ is a left adjoint if and only if all diagrams of shape $J$ in $\C$ has a limit. Dually, $\Delta$ is a right adjoint if and only if all diagrams of shape $J$ in $\C$ has a colimit.
+
+A category $\C$ is said to be \uline{cartesian closed} if both of the following hold:
+\begin{itemize}
+	\item all binary products exist in $\C$;
+	\item the functor $(-) \times A \colon \C \to \C$ is a left adjoint, for all $A \in \ob\C$.
+\end{itemize}
+Let us spell out this functor $(-) \times A$. As the notation suggests, on objects, it sends $B \in\ob\C$ to $B \times A$. Morphisms $B \xrightarrow{f} C$ in $\C$ are sent to the unique morphism induced as follows
+\[\begin{tikzcd}
+	{B \times A} && {C \times A} \\
+	\\
+	B & C & A
+	\arrow["{\exists!}", dashed, from=1-1, to=1-3]
+	\arrow["{\pi_B}"', from=1-1, to=3-1]
+	\arrow["{\pi_A}"', from=1-1, to=3-3]
+	\arrow["{p_C}"', from=1-3, to=3-2]
+	\arrow["{p_A}", from=1-3, to=3-3]
+	\arrow["f", from=3-1, to=3-2]
+\end{tikzcd}\]
+using the universal property of the product.
+
+In a cartesian closed category $\C$, and for $A \in\ob\C$, we denote the right adjoint of the functor $- \times A \colon \C \to \C$ by $(-)^A \colon \C \to \C$. 
+
+The categories $\Set$ and $\mathbf{Cat}$ are examples of cartesian closed categories. For $A, B \in \ob\Set$, we can take $B^A \coloneqq \hom_\Set(A, B)$. For $\C,\D \in \ob\mathbf{Cat}$, we can take $\D^\C \coloneqq [\C,\D]$.
+
+\begin{proposition*}
+	Let $\C$, $\D$, and $J$ be categories, and suppose that $\D$ has all limits of shape $J$. Then the functor category $[\C,\D]$ also has all limits of shape $J$.
+\end{proposition*}
+\begin{proof}
+	For a diagram $D \colon J \to [\C,\D]$, we may regard $D$ as a functor $D \colon J \times \C \to \D$ by the adjunction bijection above (which still makes sense even if our categories are not small). Define a functor $L \colon \C \to \D$ as follows:
+	\begin{itemize}
+		\item $LA$ is the limit of the diagram $D(-, A) \colon J \to \D$, for $A \in \ob\C$;
+		\item for a morphism $A \xrightarrow{f} B$ in $\C$, we define $Lf$ to be the unique morphism induced which makes the diagram below
+\[\begin{tikzcd}
+	LA && LB \\
+	\\
+	{D(j,A)} & {} & {D(j,B)}
+	\arrow["{Lf}", dashed, from=1-1, to=1-3]
+	\arrow["{\lambda_{j,A}}"', from=1-1, to=3-1]
+	\arrow["{\lambda_{j,B}}", from=1-3, to=3-3]
+	\arrow["{D(\id_j, f)}", from=3-1, to=3-3]
+\end{tikzcd}\]
+			commute for all $j \in \ob J$, where $\{\lambda_{j,X}\}_{j\in\ob J}$ are the legs of the limit cone over the diagram $D(j,X)$.
+	\end{itemize}
+	Then $(L, \{\lambda_{j,-}\}_{j\in\ob J})$ is the limit cone over $D \colon J \to [\C,\D]$ in $[\C,\D]$.
+\end{proof}
+
+
+
+
+
+
+
+\subsection{The Single Most Important Result From Category Theory}
+
+Right adjoints preserve limits; left adjoints preserve colimits.
+
+\begin{theorem*}
+	Let $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ be adjoint functors. Then:
+	\begin{itemize}
+		\item $G$ preserves all limits which exist in $\D$
+		\item $F$ preserves all colimits which exist in $\C$.
+	\end{itemize}
+\end{theorem*}
+\begin{proof}
+Let $J$ be a category, and suppose a diagram $D \colon J \to \D$ has a limit $(L, \{\lambda_j\}_{j\in\ob J})$. Observe that $(GL, \{G\lambda_j\}_{j\in\ob J})$ is a cone over $GD$. Given any other cone $(A,\{\alpha_j\})$ over $GD$, the adjunction $F \dashv G$ lets up map
+\[
+\begin{tikzcd}
+{\hom_\C(A, GD(j))} \arrow[rr, "\cong"] &  & {\hom_\D(FA, D(j))} \\
+\alpha_j \arrow[rr, maps to]            &  & \bar \alpha_j      
+\end{tikzcd}
+\]
+for all $j \in \ob J$. The $\bar \alpha_j$'s form a cone over $D$ with apex $FA$, so we have a unique induced morphism $FA \xrightarrow{\bar f} L$ making the diagam
+\[
+\begin{tikzcd}
+FA \arrow[rr, "\bar f", dashed] \arrow[rdd, "\bar \alpha_j"'] &      & L \arrow[ldd, "\lambda_j"] \\
+                                                              &      &                            \\
+                                                              & D(j) &                           
+\end{tikzcd}
+\]
+commute for all $j \in \ob J$, since $L$ is a limit for $D$. Transposing this $\bar f$ along the adjunction,
+\[
+\begin{tikzcd}
+{\hom_\C(A, GL)} \arrow[rr, "\cong"] &  & {\hom_\D(FA, L)}           \\
+f                                    &  & \bar f \arrow[ll, maps to]
+\end{tikzcd}
+\]
+we obtain the desired factorisation $A \xrightarrow{f} GL$.
+
+Dually, $F$ preserves all colimits which exist in $\C$.
+\end{proof}
+
+An immediate consequence is that in a cartesian closed category $\C$, functors of the form $(-) \times A$ preserve colimits.
+
+Another consequence is that limits commute with limits, because the limit functor from $[J,\C]$ to $\C$ is a right adjoint (consider the constant diagram functor $\Delta \colon \C \to [J,\C]$). Dually, colimits commute with colimits.
+
+
+
+
+
+
+
+
+\subsection{Injective Objects Have Nothing To Do With Injective Functions}
+
+Let us use the (dual of) the previous proposition above to define and prove the phrase ``any small category has enough projectives''.
+
+For a locally small category $\C$ and $A \in \ob\C$, observe that the functor $\hom_\C(A, -)$ preserves monomorphisms: if $X \xrightarrow{f} Y$ is a monomorphism in $\C$, then $\hom_\C(A,X) \xrightarrow{g \mapsto fg} \hom_\C(A,Y)$ is a monomorphism in $\Set$. However, the functor $\hom_\C(A, -)$ does not, in general, preserve epimorphisms.
+
+\begin{definition*}
+Let $\C$ be a locally small category and let $\mathcal E \subseteq \mor\C$ be a collection of (not necessarily all) epimorphisms in $\C$. We say that an object $P \in \ob\C$ is \uline{$\mathcal E$-projective} if $\hom_\C(P, -)$ preserves all the epimorphisms in $\mathcal E$. That is, for all epimorphisms $X \xrightarrow{f} Y$ in $\mathcal E$, the mapping
+\[
+	\hom_\C(P, X) \xrightarrow{f \circ -} \hom_\C(P, Y)
+\]
+is surjective.
+\end{definition*}
+
+If $\mathcal E \subseteq \mor \C$ is the collection of \textit{all} epimorphisms in a locally small category $\C$, then an $\mathcal E$-projective object is simply called \uline{projective}. 
+
+Recall that a regular epimorphism is an epimorphism which occurs as a coequaliser of a pair of morphisms. If $\mathcal E \subseteq \mor\C$ is the collection of \textit{all regular} epimorphisms in a locally small category $\C$, then an $\mathcal E$-projective object is called \uline{regular projective}. 
+
+Dually\footnote{For completeness, here is the full definition. An object $I$ in a category $\C$ is said to be \uline{injective} if the mapping $\hom_\C(Y, I) \xrightarrow{- \circ f} \hom_\C(X,I)$ is surjective for all monomorphisms $X \xrightarrow{f} Y$ in $\C$.}, an object $I \in \ob\C$ is said to be \uline{injective} if $I$ is projective in $\C^\op$.
+
+\begin{lemma*}
+Let $\C$ be a category, and let $\eta \in \mor [\C,\Set]$. Then $\eta$ is an epimorphism in $[\C,\Set]$ if and only if $\eta_A$ is an epimorphism in $\Set$ for all $A \in \ob\C$.
+\end{lemma*}
+\begin{proof}
+	Clearly pointwise epimorphisms are epimorphisms in $[\C,\Set]$, as natural transformations are defined pointwise.
+
+	For the forward direction, first note that a morphism $A \xrightarrow{f} B$ in any category is epic if and only if the square
+	\[\begin{tikzcd}
+	A & {} & B \\
+	\\
+	B && B
+	\arrow["f", from=1-1, to=1-3]
+	\arrow["f"', from=1-1, to=3-1]
+	\arrow["{\id_B}", from=1-3, to=3-3]
+	\arrow["{\id_B}"', from=3-1, to=3-3]
+\end{tikzcd}\]
+is a pushout. Now, $\Set$ has pushouts. So $[\C,\Set]$ has pushouts. So any epimorphism in $[\C,\Set]$ must be a pointwise epimorphism, as the pushout along itself is constructed pointwise.
+\end{proof}
+
+We remark the argument above follows through when $\Set$ is replaced with any category $\D$ which has pushouts.
+
+Dually, for categories $\C$ and $\D$ and for morphisms $\mu \in \mor[\C,\D]$, if $\D$ has pullbacks, then $\mu$ is a monomorphism in $[\C,\D]$ if and only if $\mu_A$ is a monomorphism in $\D$ for all $A \in \ob\D$.
+
+The previous lemma can now help us show that the functors $\hom_\C(A, -)$ are projective whenever the category $\C$ is small.
+
+\begin{proposition*}
+Let $\C$ be a small category and let $A \in \ob\C$. Then the functor $\hom_\C(A,-)$ is projective in $[\C,\Set]$.
+\end{proposition*}
+\begin{proof}
+	For any epimorphism $F \xrightarrow{\eta} G$ in $[\C,\Set]$, the previous lemma tells us that $\eta$ is pointwise epic. Hence for any natural transformation $\beta \colon \hom_\C(A,-) \to G$, we can let $\alpha \colon \hom_\C(A,-) \to F$ be some natural transformation which makes the chase of the element $\id_A$ in the triangle
+\[
+\begin{tikzcd}
+                                    &  & {\hom_\C(A,A)} \arrow[dd, "\beta_A"] \arrow[lldd, "\alpha_A"', dashed] &  &  &                                     &  & \id_A \arrow[dd, maps to] \arrow[lldd, dashed, maps to] \\
+                                    &  &                                                                        &  &  &                                     &  &                                                         \\
+FA \arrow[rr, "\eta_A"', two heads] &  & GA                                                                     &  &  & \alpha_A(\id_A) \arrow[rr, maps to] &  & \beta_A(\id_A)                                         
+\end{tikzcd}
+\]
+commute, by virtue of $\eta_A$ being surjective (since $\eta_A$ is an epic in $\Set$). Then $\eta\alpha = \beta$.
+\end{proof}
+
+The smallness of $\C$ above is used to ensure that $[\C,\Set]$ is locally small to allow us to speak of projective objects. Now we show that any small category ``has enough projectives''.
+
+\begin{proposition*}
+	Let $\C$ be a small category and let $F \colon \C \to \Set$ be a functor. Then there exists an epimorphism $P \xrightarrow{\eta} F$ in $[\C,\Set]$ such that $P$ is projective in $\C$.
+\end{proposition*}
+\begin{proof}
+	Take
+	\[
+		P \coloneqq \bigsqcup_{\substack{A \in \ob\C, \\ x \in FA}} \hom_\C(A,-)
+	\]
+	and let $P \xrightarrow{\eta} F$ be the natural transformation whose $(A,x)$-th component is the natural transformation which sends $\id_A$ to $x$. Then $\eta$ is an epimorphism in $[\C,\Set]$ because it is a pointwise epimorphism, and the coproduct of projective objects remains projective.
+\end{proof}
+
+
+
+
+
+
+
+
+\subsection{``Christina Aguilera --- Reflection (2020) (from Mulan)'' is a Masterpiece}
+
+\begin{lemma*}
+Let $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ be adjoint functors, and let $\eta \colon \id_\C \to GF$ and $\varepsilon \colon FG \to \id_D$ be the unit and counit of the adjunction respectively. Then:
+\begin{itemize}
+	\item $\eta$ is pointwise monic if and only if $F$ is faithful;
+	\item $\eta$ is a natural isomorphism if and only if $F$ is full and faithful;
+	\item $\varepsilon$ is pointwise epic if and only if $G$ is faithful;
+	\item $\varepsilon$ is a natural isomorphism if and only if $G$ is full and faithful.
+\end{itemize}
+\end{lemma*}
+\begin{proof}
+	Let $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} A'$ be a morphism in $\C$. Under the adjunction bijection of $F \dashv G$, we have the correspondence
+	\[
+\begin{tikzcd}
+{\hom_\C(A, GFA')} &  & {\hom_\D(FA, FA')} \arrow[ll, "F \dashv G"',"\cong"] \\
+(GFf)\eta_A &  & Ff \arrow[ll, maps to]                 
+\end{tikzcd}
+	\]
+	and $(GFf)\eta_A = \eta_{A'}f$ by the naturality of $\eta$. Similarly, $g$ gets bijectively corresponded to $\eta_{A'}g$. So $\eta$ is pointwise monic if and only if $F$ is faithful.
+	
+	If $\eta$ is upgraded to a natural isomorphism, then for all $A,A'\in\ob\C$ and all morphisms $FA \xrightarrow{g} FA'$ in $\D$, we can define the morphism $A \xrightarrow{f} A'$ in $\C$ to be the composite
+	\[
+\begin{tikzcd}
+A \arrow[rr, "f \coloneqq \eta_{A'}^{-1}(Gg)\eta_A"] \arrow[dd, "\eta_A"'] &  & A' \\ &  &  \\ GFA \arrow[rr, "Gg"']    &  & GFA' \arrow[uu, "\eta_{A'}^{-1}"']
+\end{tikzcd}
+	\]
+	and we get $Ff = g$. So $F$ is, in addition to being faithful, also full.
+	
+	Conversely, if $F$ is full and faithful, then the fact that $\eta$ is a natural isomorphism follows from the isomorphisms
+\[\begin{tikzcd}
+	{\hom_\C(A',A)} && {\hom_\D(FA',FA)} && {\hom_\C(A', GFA)} \\
+	f && Ff && {(GFf)\eta_{A'} = \eta_Af}
+	\arrow["F \text{ fully faithful}","\cong"', from=1-1, to=1-3]
+	\arrow["F \dashv G", "\cong"', from=1-3, to=1-5]
+	\arrow[maps to, from=2-1, to=2-3]
+	\arrow[maps to, from=2-3, to=2-5]
+\end{tikzcd}\]
+	for all $A,A'\in\ob\C$.
+	
+	Dually, we have the results for $\varepsilon$ and $G$.
+\end{proof}
+
+\begin{definition*}
+	A \uline{reflection} is a pair of adjoint functors $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ such that the counit $\varepsilon \colon FG \to \id_\D$ is an isomorphism.
+\end{definition*}
+
+Equivalently, by the previous lemma, a reflection is an adjunction $F \dashv G$ such that $G$ is full and faithful.
+
+\begin{definition*}
+	Given a category $\C$ and a full subcategory $\D \subseteq \C$, we say that $\D$ is a \uline{reflective subcategory} of $\C$ if the inclusion functor $\C \xleftarrow{\iota} \D$ is a right adjoint.
+\end{definition*}
+
+Note that the unit of the adjunction is an isomorphism on objects in the reflective subcategory, via a similar chase to the previous lemma. Consequently, given a reflective subcategory $\D$ of a category $\C$, the inclusion functor $\C \xleftarrow{\iota} \D$ creates all limits which exist in $\C$, for given a diagram $D \colon J \to \D$ with a limit cone $(L, \{\lambda_j\}_{j\in\ob J})$ in $\C$, the cone in $\D$ with apex $FL$ and legs
+\[
+\begin{tikzcd}
+FL \arrow[rr, "F\lambda_j"] &  & FD(j) \arrow[rr, "\eta_{D(j)}^{-1}"] &  & D(j)
+\end{tikzcd}
+\]
+is actually a limit cone over $D$.
+
+Dually\footnote{For completeness, here is the full definition. Given a category $\D$ and a subcategory $\C \subseteq \D$, we say that $\D$ is a \uline{coreflective subcategory} of $\C$ if $\D$ is a full subcategory of $\C$ and the inclusion functor $\C \xrightarrow{\iota} \D$ is a left adjoint.}, we have the notion of a \uline{coreflective subcategory}.
+
+
+
+
+
+
+
+
+
+
+
+\subsection{The Adjoint Functor Theorems Are Simulatneously Useful and Useless}
+
+\begin{theorem*}[The General Adjoint Functor Theorem]
+	Let $\C \xleftarrow[G]{} \D$ be a functor, with $\D$ locally small and complete. Then $G$ is a right adjoint if and only if both of the following hold:
+	\begin{itemize}
+		\item $G$ is continuous (i.e. $G$ preserves all small limits);
+		\item $G$ satisfies the \uline{solution-set condition}: for all $A \in \ob\C$ there exists a set\footnote{Note that we say \textit{set} instead of \textit{collection}! This $\mathcal S$ is small!} $\mathcal S \subseteq \ob(A \downarrow G)$ which is \uline{collectively weakly initial}\footnote{This means what you think it means: for any other object in the category, there is a morphism from some object in $\mathcal S$ to that object.}.
+	\end{itemize}
+\end{theorem*}
+\begin{proof}
+For the forward direction, letting $\eta$ be the unit of the adjunction $F \dashv G$, then the object $(FA, \eta_A)$ is initial in $(A \downarrow G)$, for all $A \in \ob\C$. And we already know that right adjoints preserve limits.
+
+For the converse direction, fix $A \in \ob\C$. We want to show that $(A \downarrow G)$ has an initial object. Let $\mathcal S \subseteq \ob(A \downarrow G)$ be a set of collectively weakly initial objects. For brevity, denote $\mathcal A \coloneqq (A \downarrow G)$. Proceed as follows.
+\begin{enumerate}
+	\item Show that $\mathcal A = (A \downarrow G)$ is locally small and complete, using the fact that $\D$ has and $G$ preserves all small limits.
+	\item Let $J \subseteq \mathcal A$ be the full subcategory of $\mathcal A$ with $\ob J = \mathcal S$. Let $(L, \{\lambda_j\}_{j \in \ob J})$ be the limit cone, in $\mathcal A$, of the inclusion diagram $\iota \colon J \to \mathcal A$. We aim to show that $L$ is initial in $\mathcal A$.
+	\item For $a \in \mathcal \ob \mathcal A$, choose a morphism $\mathcal S \ni j_a \xrightarrow{h_a} a$ in $\mathcal A$. Define the morphism $L \xrightarrow{i_a} a$ to be the composite
+		\[\begin{tikzcd}
+	L && j_a && a
+	\arrow["{\lambda_{j_a}}", from=1-1, to=1-3]
+	\arrow["h_a", from=1-3, to=1-5]
+\end{tikzcd}\]
+	So, at the very least, $L$ is a weakly initial object in $\mathcal A$.
+	\item We did step 3 for all $a \in \ob \mathcal A$. In particular, we did it for $L \in \ob\mathcal A$. We produced a morphism $L \xrightarrow{i_L} L$. Show that, in fact, we have $i_L = \id_L$, using the limit cone properties of $L$, and using that $J$ is a full subcategory of $\mathcal A$.
+	\item For a general $a \in \ob \mathcal A$ and a morphism $L \xrightarrow{f} a$, construct the pullback $P$ of the cospan
+\[\begin{tikzcd}
+	&& {j_a} \\
+	\\
+	{j_L} & L & a
+	\arrow["{h_a}", from=1-3, to=3-3]
+	\arrow["{h_L}"', from=3-1, to=3-2]
+	\arrow["f"', from=3-2, to=3-3]
+\end{tikzcd}\]
+	in $\mathcal A$. Then we get the commutative diagram
+\[
+\begin{tikzcd}[sep = small]
+L \arrow[rd, "\lambda_{j_P}"] \arrow[rrrrdd, "\lambda_{j_a}", bend left] \arrow[rrdddd, "\lambda_{j_L}"', bend right] & &  & &   \\
+& j_P \arrow[rd, "h_P"] &   &  &    \\
+    & & P \arrow[rr] \arrow[dd] & & j_a \arrow[dd, "h_a"] \\
+& &   & &   \\
+ &  & j_L \arrow[r, "h_L"']   & L \arrow[r, "f"'] & a                    
+\end{tikzcd}
+\]
+in $\mathcal A$, from which we get
+	\[
+		f = f \underbrace{h_L\lambda_{j_L}}_{= i_L = \id_L} = h_a\lambda_{j_a} = i_a\,.
+	\]
+\end{enumerate}
+So $L$ is initial in $\mathcal A$.
+\end{proof}
+
+
+
+
+
+
+
+If the category $\D$ in the general adjoint functor theorem has a certain properties, it is possible to remove the solution set condition.
+
+\begin{definition*}
+	Let $\C$ be a category and $A \in \ob\C$. A \uline{subobject} of $A$ is a monomorphism in $\C$ with codomain $A$.
+\end{definition*}
+
+Given a category $\C$ and an object $A$ in $\C$, the collection of subobjects $\operatorname{Sub}(A)$ of $A$ form a preorder under the relation
+\[
+	m \leq m' \text{ if and only if there exists } k \in \hom_\C(\dom(m), \dom(m')) \text{ such that } m'k = m\,, 
+\]
+and so we can consider $\operatorname{Sub}(A)$ as a category. Observe that if monomorphisms $\dom(m) \xrightarrow{m} A$ and $\dom(m') \xrightarrow{m'} A$ in $\C$ are such that $m \leq m'$ and $m' \leq m$, then there exists an \textit{iso}morphism $\dom(m) \xrightarrow[\cong]{k} \dom(m')$ such that $m'k = m$, so for all intents and purposes, $m$ and $m'$ are ``the same''.
+
+We say that $\C$ is \uline{well-powered} if for all $A\in\ob\C$, the category $\operatorname{Sub}(A)$ is equivalent to a \textit{small} partial order (when considered as a category). Dually\footnote{For completeness, here is the full definition. A category $\C$ is said to be \uline{well-copowered} if $\C^\op$ is well-powered. In other words, a \uline{quotient object} of $A \in \ob\C$ is an epimorphism with domain $A$, and we can impose an ordering $e \leq e'$ on quotient objects $e$, $e'$ of $A$ if and only if there exists $k \in \hom_\C(\cod(e), \cod(e'))$ such that $ke' = e$. Then the category $\C$ is \uline{well-copowered} if and only if for all $A \in\ob\C$ the category of quotient objects of $A$ considered as a preorder is equivalent to a small partial order.}, we have the notion of a category being \uline{well-copowered}.
+
+First, an elementary lemma stating that ``monomorphisms are stable under pullbacks'', which is very easy to prove if you're already reading this far into the document.
+
+\begin{lemma*}
+Suppose we have a pullback square
+\[
+\begin{tikzcd}
+P \arrow[rr, "h"] \arrow[dd, "k"'] &  & A \arrow[dd, "f", tail] \\
+                                   &  &                         \\
+B \arrow[rr, "g"']                 &  & C                      
+\end{tikzcd}
+\]
+in some category, with $f$ monic. Then $k$ is also monic.
+\end{lemma*}
+
+Dually, epimorphisms are stable under pushouts.
+
+Recall the notion of a \uline{coseparating family of objects} in a locally small category, which is a family of objects $\mathcal S$ in a locally small category $\C$ such that the functors $\{\hom_\C(-,s)\}_{s\in\mathcal S}$ are collectively faithful.
+
+\begin{proposition*}[The Special Adjoint Functor Theorem]
+	Let $\C \xleftarrow[G]{} \D$ be a functor, with $\D$ locally small and complete. Suppose further that $\D$ is well-powered and has a coseparating set\footnote{Again, notice the use of the word \textit{set}.} of objects $\mathcal S \subseteq \ob\D$. Then $G$ is a right adjoint if and only if $G$ is continuous.
+\end{proposition*}
+\begin{proof}
+	Again, the forward direction is simply because right adjoints preserve limits.
+
+	For the converse, for $A \in \ob\C$, again denote $\mathcal A \coloneqq (A\downarrow G)$. Proceed as follows.
+	\begin{enumerate}
+		\item Show that $\mathcal A = (A \downarrow G)$ is locally small, complete, and well-powered.
+		\item Show that $\{\,(s, f) : s \in \mathcal S \text{ and } f \in \hom_\C(A, Gs)\,\}$ is a coseparating set for $\mathcal A = (A \downarrow G)$.
+		\item Define $P \coloneqq \prod_{s \in \mathcal S} s$. Take the limit cone with apex is $I \in \ob\D$, say, of the diagram whose edges are a representative set of subobjects of $P$, i.e. a set which contains at least one member of every isomorphism class of subobjects of $P$. As with the previous lemma, the legs of this limit cone will all be monomorphisms. In particular, $I \rightarrowtail P$ is the \textit{least} subobject of $P$. And any parallel pair of morphisms out of $I$ must be equal, for their equaliser would be a subobject of $I$.
+		\item For all $A' \in \ob\mathcal A$, the induced morphism in the diagram
+			\[
+\begin{tikzcd}
+A' \arrow[rr, dashed, tail] \arrow[rrdd, "f"'] &  & {\prod_{\substack{s\in \mathcal S, \\ f \in \hom_\C(A',s)}}} \arrow[dd, "{\pi_{s,f}}"] \\
+                                              &  &                                                                                       \\
+                                              &  & s                                                                                    
+\end{tikzcd} \qquad \text{, for all } s\in\mathcal S \text{ and } f \in \hom_\C(A',s),
+			\]
+			must be a monomorphism since $\mathcal S$ is a coseparating set. 
+		\item For all $A' \in \ob\mathcal A$, form the pullback $P'$ of the canonical induced maps 
+			\[
+			P \rightarrow \prod_{\substack{s\in \mathcal S, f \in \hom_\C(A',s)}}s \leftarrow A'
+			\]
+			as shown below
+			\[
+\begin{tikzcd}
+I \arrow[rr, dashed, tail] \arrow[rrdd, tail] &  & P' \arrow[dd, tail] \arrow[rr]              &  & A' \arrow[dd, dashed, tail] \arrow[dddd, "f", bend left=71] \\
+                                              &  &                                             &  &                                                             \\
+                                              &  & P \arrow[rr, dashed] \arrow[rrdd, "\pi_s"'] &  & {{\prod\limits_{\substack{s\in \mathcal S, \\ f \in \hom_\C(A',s)}}}s} \arrow[dd, "{\pi_{s,f}}"]                               \\
+                                              &  &                                             &  &                                                             \\
+                                              &  &                                             &  & s                                                          
+\end{tikzcd}
+			\]
+			to obtain a morphism $I \to A'$. Conclude that $I$ is initial in $\mathcal A$. \qedhere
+	\end{enumerate}
+\end{proof}
+
+
+
+
+
+
+
+
+
+\clearpage \newpage
+\section{Monads}
+
+\subsection{a MoNaD iS a MoNoId In ThE cAtEgOrY oF eNdOfUnCtOrS}
+
+\begin{definition*}
+	Let $\C$ be a category. A \underline{monad on $\C$} is a triple $\mathbb T \coloneqq (T, \eta, \mu)$, where
+	\begin{itemize}
+		\item $T \colon \C \to \C$ is a functor, also called an \uline{endofunctor},
+		\item $\eta \colon 1_\C \to T$ is a natural transformation, called the \uline{unit of $\mathbb T$}, and
+		\item $\mu \colon TT \to T$ is a natural transformation, called the \uline{multiplication of $\mathbb T$},
+	\end{itemize}
+	such that the following three diagrams
+	\[
+\begin{tikzcd}
+T \arrow[rd, "\id_T"'] \arrow[r, "T\eta"] & TT \arrow[d, "\mu"] &                                           &                     & T \arrow[r, "\eta_T"] \arrow[rd, "\id_T"'] & TT \arrow[d, "\mu"] \\
+                                        & T                   &                                           &                     &                                          & T                   \\
+                                        &                     & TTT \arrow[r, "T\mu"] \arrow[d, "\mu_T"'] & TT \arrow[d, "\mu"] &                                          &                     \\
+                                        &                     & TT \arrow[r, "\mu"']                      & T                   &                                          &                    
+\end{tikzcd}
+	\]
+	in $[\C,\C]$ commute.
+\end{definition*}
+
+The first two commutative triangles in the definition above are called the \uline{left unit diagram} and the \uline{right unit diagram} respectively, and the third commutative square above is called the \uline{associativity diagram}.
+
+An adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ with unit $\eta \colon \id_{\C} \to GF$ and counit $\varepsilon \colon FG \to \id_\D$ give rise to a monad structure on $\C$ by setting
+\begin{itemize}
+	\item the endofunctor to be $T \coloneqq GF$,
+	\item the unit of the monad to be $\eta$, and
+	\item the multiplication of the monad to be $\mu \coloneqq G\varepsilon_F$.
+\end{itemize}
+
+A very natural question is now: does every monad arise from doing the construction above to some adjunction? The answer is yes. We shall see two different adjunction constructions from monads, one due to Heinrich Kleisli, and the other due to Samuel Eilenberg and John Moore.
+
+
+
+
+
+\subsection{Computer Scientists Like This One}
+% Kleisli colour scheme: rgb,255:red,204;green,51;blue,51
+
+Heinrich Kleisli took quite a ``minimalistic approach'' when creating an adjunction which gives rise to a fixed monad. It is inspired from the observation that when we are given an adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ which induces a monad $\mathbb T$, we can replace $\D$ by the full subcategory generated by the objects $\{FA\}_{A \in \ob\C}$ in $\D$, as this will still yield the same monad $\mathbb T$. The Kleisli category is of interest to functional programmers. Perhaps the easiest way to grasp it is to look at the Kleisli category arising from the Maybe Monad, used for exception-handling and call-by-value functions with side-effects in functional programming.
+
+\begin{definition*}
+	Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. The \uline{Kleisli category} $\C_{\mathbb T}$ is the category where:
+	\begin{itemize}
+		\item $\ob \C_{\mathbb T} \coloneqq \ob \C$;
+		\item $\hom_{\C_{\mathbb T}}(A, B) \coloneqq \hom_\C(A, TB)$ for $A, B \in \ob\C_{\mathbb T}$;
+		\item for any two morphisms $\begin{tikzcd}
+	A & B & C
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+	\arrow["g", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-2, to=1-3]
+\end{tikzcd}$ in $\C_{\mathbb T}$, the composition $\begin{tikzcd}
+	A & C
+	\arrow["gf", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}$ in $\C_{\mathbb T}$ is defined to be the composite morphism
+			\[
+\begin{tikzcd}
+A \arrow[r, "f"] & TB \arrow[r, "Tg"] & TTC \arrow[r, "\mu_C"] & TC
+\end{tikzcd}
+			\]
+			in $\C$.
+		\item for any $A \in \ob\C_{\mathbb T}$, the identity morphism $\begin{tikzcd}
+	A
+	\arrow["{{\id_A}}", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-1, loop, in=325, out=35, distance=10mm]
+\end{tikzcd}$ in $\C_{\mathbb T}$ is the morphism 
+\[
+\begin{tikzcd}
+A \arrow[r, "\eta_A"] & TA
+\end{tikzcd}
+\]
+	in $\C$.
+	\end{itemize}
+\end{definition*}
+
+The squiggly coloured arrows are merely there to distinguish the morphisms in the Kleisli category from the morphisms in the original category. When handwriting, one can simply draw the wavy arrows $A \rightsquigarrow B$, and that would be sufficient to distinguish it from a morphism in $\C$. Using both coloured and squiggly arrows is overkill. But who's going to stop me?
+
+Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. Define the functor $\C \xrightarrow{F_\mathbb T} \C_{\mathbb T}$ as follows:
+	\begin{itemize}
+		\item on objects, $F_{\mathbb T}(A) \coloneqq A$;
+		\item on morphisms, $F_{\mathbb T}(A \xrightarrow{f} B)$ is defined to be the composite morphism
+			\[
+\begin{tikzcd}
+A \arrow[r, "f"] & B \arrow[r, "\eta_B"] & TB
+\end{tikzcd}
+			\]
+			in $\C$.
+	\end{itemize}
+	Define the functor $ \C \xleftarrow[G_\mathbb T]{} \C_{\mathbb T}$ as follows:
+	\begin{itemize}
+		\item on objects, $G_{\mathbb T}(A) \coloneqq TA$;
+		\item on morphisms, $G_{\mathbb T}(\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd})$ is defined to be the composite 
+\[
+TA \xrightarrow{Tf} TTB \xrightarrow{\mu_B} TB
+\]
+in $\C$.
+	\end{itemize}
+These two functors $F_\mathbb T$ and $G_\mathbb T$ form an adjunction which give rise to the monad $\mathbb T$.
+
+\begin{proposition*}
+Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. Then we have an adjunction $\begin{tikzcd}
+	\C & \C_{\mathbb T}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F_{\mathbb T}", shift left=2, from=1-1, to=1-2]
+	\arrow["G_{\mathbb T}", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ inducing the monad $\mathbb T$.
+\end{proposition*}
+\begin{proof}
+	The unit of this adjunction is $\eta$. The counit of this adjunction is $\varepsilon \colon F_{\mathbb T} G_{\mathbb T} \to \id_{\C_{\mathbb T}}$ defined as follows: $\begin{tikzcd}
+	{F_{\mathbb T}G_{\mathbb T} A} & A
+	\arrow["{\varepsilon_A}", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}$ is defined to be the identity morphism $\begin{tikzcd}
+TA \arrow["\id_{TA}", loop, distance=2em, in=325, out=35]
+\end{tikzcd}$ in $\C$, for all $A \in \ob\C_{\mathbb T}$.
+\end{proof}
+
+
+
+
+
+
+
+\subsection{Whereas Mathematicians Like This One}
+
+Samuel Eilenberg and John Moore also produced an adjunction inducing a given monad. This construction has quite a rich theory to it and is, in some sense, more elegant. At the very least, we don't need different coloured arrows to spell out the Eilenberg-Moore category. More profoundly, this construction generalises algebraic structures.
+
+\begin{definition*}
+	Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. The \uline{Eilenberg-Moore category (of algebras)} $\C^{\mathbb T}$ is the category where:
+	\begin{itemize}
+		\item the objects of $\C^{\mathbb T}$ are \uline{Eilenberg-Moore algebras}/\uline{$\mathbb T$-algebras}, which are pairs $(A, \alpha)$ where $A \in \ob\C$ and $TA \xrightarrow{\alpha} A$ is a morphism in $\C$, making the following two diagrams
+			\[
+\begin{tikzcd}
+A \arrow[rr, "\eta_A"] \arrow[rrdd, "\id_A"'] &  & TA \arrow[dd, "\alpha"] &  &  & TTA \arrow[rr, "T\alpha"] \arrow[dd, "\mu_A"'] &  & TA \arrow[dd, "\alpha"] \\
+                                              &  &                         &  &  &                                                &  &                         \\
+                                              &  & A                       &  &  & TA \arrow[rr, "\alpha"']                       &  & A                      
+\end{tikzcd}
+			\]
+			in $\C$ commute;
+		\item a morphism $(A, \alpha) \xrightarrow{f} (B,\beta)$ in $\C^{\mathbb T}$ is a morphism in $A \xrightarrow{f} B$ in $\C$ making the diagram
+			\[
+\begin{tikzcd}
+TA \arrow[dd, "\alpha"'] \arrow[rr, "Tf"] &  & TB \arrow[dd, "\beta"] \\
+                                          &  &                        \\
+A \arrow[rr, "f"']                        &  & B                     
+\end{tikzcd}
+			\]
+			in $\C$ commute, and is called a \uline{homomorphism of $\mathbb T$-algebras}.
+		\item composition and identity morphisms in $\C^{\mathbb T}$ are composition and identity morphisms in $\C$.
+	\end{itemize}
+\end{definition*}
+
+Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. Define the functor $\C \xrightarrow{F^\mathbb T} \C^{\mathbb T}$ as follows:
+	\begin{itemize}
+		\item on objects, $F^{\mathbb T}(A) \coloneqq (TA, \mu_A)$;
+		\item on morphisms $F^{\mathbb T}(A \xrightarrow{f} B) \coloneqq (TA \xrightarrow{Tf} TB)$.
+	\end{itemize}
+	Define the functor $\C \xleftarrow[G^\mathbb T]{} \C^{\mathbb T}$ to be the \uline{forgetful functor}, which forgets the $\mathbb T$-algebra structure and returns the underlying objects and morphisms in $\C$. As before, these two functors $F^\mathbb T$ and $G^\mathbb T$ form an adjunction which give rise to the monad $\mathbb T$.
+
+\begin{proposition*}
+Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. Then we have an adjunction $\begin{tikzcd}
+	\C & \C^{\mathbb T}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F^{\mathbb T}", shift left=2, from=1-1, to=1-2]
+	\arrow["G^{\mathbb T}", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ inducing the monad $\mathbb T$.
+\end{proposition*}
+\begin{proof}
+The unit of this adjunction is $\eta$. The counit of this adjunction is $\varepsilon \colon F_{\mathbb T} G_{\mathbb T} \to \id_{\C_{\mathbb T}}$ defined by $\varepsilon_{(A,\alpha)} \coloneqq \alpha$ for all $(A,\alpha) \in \ob \C^{\mathbb T}$.
+\end{proof}
+
+
+
+
+
+
+\subsection{Cope and Seethe, Kleisli.}
+
+For a monad $\mathbb T$ on a category $\C$, let $\mathbf{Adj}(\mathbb T)$ be the category whose:
+\begin{itemize}
+	\item objects are adjoint functors $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ which induce the monad $\mathbb T$ on $\C$;
+	\item morphisms $(\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}) \xrightarrow{K} (\begin{tikzcd}
+	\C & \D'
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F'", shift left=2, from=1-1, to=1-2]
+	\arrow["G'", shift left=2, from=1-2, to=1-1]
+\end{tikzcd})$ are functors $K \colon \D \to \D'$ such that
+\[
+	KF = F' \quad \text{ and } G'K = G\,.
+\]
+\end{itemize}
+Note that we have equalities above. Not isomorphisms. Interesting.
+
+\begin{proposition*}
+	Let $\mathbb T$ be a monad on a category $\C$. Then:
+	\begin{itemize}
+		\item the Kleisli adjunction $\begin{tikzcd}
+	\C & \C_{\mathbb T}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F_{\mathbb T}", shift left=2, from=1-1, to=1-2]
+	\arrow["G_{\mathbb T}", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ is an initial object in $\mathbf{Adj}(\mathbb T)$;
+		\item the Eilenberg-Moore adjunction $\begin{tikzcd}
+	\C & \C^{\mathbb T}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F^{\mathbb T}", shift left=2, from=1-1, to=1-2]
+	\arrow["G^{\mathbb T}", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ is a terminal object in $\mathbf{Adj}(\mathbb T)$.
+	\end{itemize}
+\end{proposition*}
+\begin{proof}
+	Fix $(\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}) \in \ob\mathbf{Adj}(\mathbb T)$. Let $\varepsilon \colon FG \to \id_\D$ be the counit of this adjunction.
+
+The \uline{Kleisli comparison functor} $\C_\mathbb T \xrightarrow{H} \D$ in $\mathbf{Adj}(\mathbb T)$ is defined as follows:
+\begin{itemize}
+	\item on objects, $HA \coloneqq FA$, for $A \in \ob\C_\mathbb T$;
+	\item on morphisms, $H(\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}) \coloneqq \begin{tikzcd}
+(FA \arrow[r, "Ff"] & FGFB \arrow[r, "\varepsilon_{FB}"] & FB
+\end{tikzcd})$.
+\end{itemize}
+
+The \uline{Eilenberg-Moore comparison functor} $\D \xrightarrow{K} \C^\mathbb T$ in $\mathbf{Adj}(\mathbb T)$ is defined as follows:
+\begin{itemize}
+	\item on objects, $KB \coloneqq (GB, G\varepsilon_B)$, for $B \in \ob\D$;
+	\item on morphisms, $K(B \xrightarrow{g} B')$ is the morphism $GB \xrightarrow{Gg} GB'$ in $\C$. \qedhere
+\end{itemize}
+\end{proof}
+
+So far, it seems that the Kleisli category and the Eilenberg-Moore category are both interesting in their own right with their own properties. This is true. However, you will find some mathematicians arguing that the Eilenberg-Moore category is better. Let's explore some arguments they propose.
+
+The Kleisli comparison functor $H \colon \C_{\mathbb T} \to \D$ sends a morphism $\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}$ in $\C_\mathbb T$, which is secretly the morphism $A \xrightarrow{f} GFB$ in $\C$, to its transpose along the adjunction bijection $\hom_\C(A, GFB) \cong \hom_\D(FA, FB)$. Thus $H$ is full and faithful, and this allows us to fully and faithfully embed the Kleisli category into the Eilenberg-Moore category.
+
+\begin{corollary*}
+	Let $\mathbb T = (T, \eta, \mu)$ be a monad on a category $\C$. Then the assignment
+	\begin{itemize}
+		\item $A \mapsto (TA, \mu_A)$, for $A \in \ob \C_{\mathbb T}$, and
+		\item $(\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}) \mapsto (\begin{tikzcd}
+(TA,\mu_A) \arrow[r, "\mu_BTf"] & (TB,\mu_B)
+\end{tikzcd})$, for $(\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,204;green,51;blue,51}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}) \in \mor \C_{\mathbb T}$,
+	\end{itemize}
+	is a full and faithful functor from $\C_{\mathbb T}$ to $\C^{\mathbb T}$.
+\end{corollary*}
+
+The Eilenberg-Moore category of a monad $\mathbb T = (T,\eta,\mu)$ on a category $\C$ is a lot more well-behaved than the Kleisli category when it comes to limits and colimits. Both of them have \textit{some} structure, because they stem from adjunctions --- right adjoints preserve limits and left adjoints preserve colimits. In particular, if the category $\C$ has coproducts, then the Kleisli category $\C_\mathbb{T}$ also has coproducts because $F_\mathbb T$ is a left adjoint and is bijective on objects. But, in general, $\C_\mathbb T$ has few other limits or colimits. A lot more can be said about the Eilenberg-Moore category $\C^{\mathbb T}$.
+
+To start with, forgetful functor $\C \xleftarrow[G^{\mathbb T}]{} \C^{\mathbb T}$ creates all the limits which exist in $\C$. Consider, for example, the diagram $\begin{tikzcd}
+{(A, \alpha)} \arrow[r, "f"] & {(B,\beta)}
+\end{tikzcd}$ in $\C^{\mathbb T}$ and suppose that its image under $G^{\mathbb T}$ has a limit cone $(L, \{\lambda_A, \lambda_B\})$. We get the following commuting diagram in $\C$:
+\[
+\begin{tikzcd}
+                                            &                   & TL \arrow[d, "\exists!", dashed] \arrow[rrdddd, "T\lambda_\beta", bend left] \arrow[lldddd, "T\lambda_\alpha"', bend right] &   &                        \\
+                                            &                   & L \arrow[ldd, "\lambda_A"'] \arrow[rdd, "\lambda_B"]                                                        &   &                        \\
+                                            &                   &                                                                                                             &   &                        \\
+                                            & A \arrow[rr, "f"] &                                                                                                             & B &                        \\
+TA \arrow[ru, "\alpha"'] \arrow[rrrr, "Tf"] &                   &                                                                                                             &   & TB \arrow[lu, "\beta"]
+\end{tikzcd}
+\]
+Then $L$ paired with the unique morphism induced above is the apex of the limit cone of the diagram $\begin{tikzcd}
+{(A, \alpha)} \arrow[r, "f"] & {(B,\beta)}
+\end{tikzcd}$ in $\C^{\mathbb T}$, and this limit cone in $\C^{\mathbb T}$ has $\lambda_A$ and $\lambda_B$ as its legs.
+
+Rather similarly (but not dually), the forgetful functor $\C \xleftarrow[G^{\mathbb T}]{} \C^{\mathbb T}$ creates all the colimits which both exist in $\C$ and are preserved by $T$. And, of course, if $G^\mathbb T$ creates a colimit, then in particular it preserves that colimit, whence $T = G^\mathbb T F^\mathbb T$ also preserves that colimit because $F^\mathbb T$ is a left adjoint.
+
+
+
+
+
+
+
+
+
+\subsection{Comathematics and Mputer Science}
+% co-Kleisli colour scheme: rgb,255:red,36;green,143;blue,36
+
+You thought you were safe because you haven't seen dual definitions in a while? Cute. And yes, I didn't shaft all this to footnotes purely for this subsection title.
+
+A \uline{comonad} on a category $\D$ is a triple $\mathbb S = (S, \varepsilon, \delta)$ where $S \colon \D \to \D$ is a functor, and $\varepsilon \colon S \to \id_\D$ and $\delta \colon S \to SS$ are natural transformations satisfying $(S\varepsilon)\delta = \id_S$, $(\varepsilon_{S})\delta = \id_S$, and $(S\delta)\delta = (\delta_S)\delta$. That is, the following three diagrams
+\[
+\begin{tikzcd}
+S & SS \arrow[l, "S\varepsilon"']              &                          &                                            & S & SS \arrow[l, "\varepsilon_S"']             \\
+  & S \arrow[lu, "\id_S"] \arrow[u, "\delta"'] &                          &                                            &   & S \arrow[lu, "\id_S"] \arrow[u, "\delta"'] \\
+  &                                            & SSS                      & SS \arrow[l, "S\delta"']                   &   &                                            \\
+  &                                            & SS \arrow[u, "\delta_S"] & S \arrow[u, "\delta"'] \arrow[l, "\delta"] &   &                                           
+\end{tikzcd}
+\]
+in $[\D,\D]$ commute. In this case, $\varepsilon$ is called the \uline{counit} of $\mathbb S$ and $\delta$ is called the \uline{comultiplication} of $\mathbb S$. In other words, $(S, \varepsilon, \delta)$ is a comonad on $\D$ if and only if $(S^\op, \varepsilon^\op, \delta^\op)$ is a monad on $\D^\op$.
+
+First, observe that if we have an adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$, then we also have the adjunction $\begin{tikzcd}
+	\D^\op & \C^\op
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["G^\op", shift left=2, from=1-1, to=1-2]
+	\arrow["F^\op", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$, i.e. we have a bijection
+\[
+	\hom_{\D^\op}(B, F^\op A) \cong \hom_{\C^\op}(G^\op B, A)
+\]
+which is natural in $A$ and $B$, for all $A \in \ob\C^\op$ and $B\in\ob\D^\op$. This shouldn't be surprising, because unravelling everything in the bijection above gives us the familiar bijection $\hom_\C(A, GB) \cong \hom_\D(FA, B)$. If $\eta$ and $\varepsilon$ are, respectively, the unit and counit of the adjunction $F \dashv G$, then the adjunction $G^\op \dashv F^\op$ will have $\varepsilon$ as its unit and $\eta$ as its counit. Consequently, $(F^\op G^\op, \varepsilon^\op, F^\op \eta^\op_{G^\op})$ is a monad on $\D^\op$. Therefore, the adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ induces the comonad $(FG, \varepsilon, F\eta_G)$ on $\D$.
+
+As before, every comonad $\mathbb S = (S, \varepsilon, \delta)$ on a category $\D$ arises from some adjunction in the way spelled out above. Indeed, we simply dualise the Kleisli and the Eilenberg-Moore constructions.
+\begin{itemize}
+	\item The \uline{co-Kleisli category} for the comonad $\mathbb S = (S, \varepsilon, \delta)$ has the same objects as $\D$, and a morphism $\begin{tikzcd}
+	A & B
+	\arrow["f", color={rgb,255:red,36;green,143;blue,36}, squiggly, from=1-1, to=1-2]
+\end{tikzcd}$ in the co-Kleisli category is a morphism $\begin{tikzcd}
+SA \arrow[r, "f"] & B
+\end{tikzcd}$ in $\D$. A composite morphism
+\[\begin{tikzcd}
+	A & B & C
+	\arrow["f", color={rgb,255:red,36;green,143;blue,36}, squiggly, from=1-1, to=1-2]
+	\arrow["g", color={rgb,255:red,36;green,143;blue,36}, squiggly, from=1-2, to=1-3]
+\end{tikzcd}\]
+in the co-Kleisli category is defined to be the composite
+\[
+\begin{tikzcd}
+SA \arrow[r, "\delta_A"] & SSA \arrow[r, "Sf"] & SB \arrow[r, "g"] & C
+\end{tikzcd}
+\]
+in $\D$, with the morphism $\begin{tikzcd}
+SA \arrow[r, "\varepsilon_A"] & A
+\end{tikzcd}$ in $\D$ as the identity morphism on $A$ in the co-Kleisli category.
+	\item The objects of the \uline{co-Eilenberg-Moore category of $\mathbb S$-coalgebras} are pairs $(A,\alpha)$ with $A \in \ob\D$ and $\alpha \in \hom_\D(A, SA)$ such that the following two diagrams
+	\[
+\begin{tikzcd}
+A &  & SA \arrow[ll, "\varepsilon_A"']               &  &  & SSA                       &  & SA \arrow[ll, "S\alpha"']                    \\
+  &  &                                               &  &  &                           &  &                                              \\
+  &  & A \arrow[lluu, "\id_A"] \arrow[uu, "\alpha"'] &  &  & SA \arrow[uu, "\delta_A"] &  & A \arrow[uu, "\alpha"'] \arrow[ll, "\alpha"]
+\end{tikzcd}
+	\]
+	in $\D$ commute. A homomorphism $(A,\alpha) \xrightarrow{f} (B,\beta)$ of $\mathbb S$-coalgebras is a morphism $f \in \hom_\D(A,B)$ such that $(Sf)\alpha = \beta f$.
+\end{itemize}
+Again, in the category of adjunctions inducing a comonad $\mathbb S$ on a category $\D$, the co-Kleisli adjunction is an initial object and the co-Eilenberg adjunction is a terminal object. So we have the relevant comparison functors.
+
+
+
+
+
+
+
+
+
+
+\subsection{Communists Like Equalisers; Capitalists Like Coequalisers.}
+
+We take a brief pause on (co)monads to discuss several notions related to coequalisers which will be used in the monadicity theorems later.
+
+A parallel pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ is said to be \uline{reflexive} if there exists a morphism $A \xleftarrow{r} B$ such that $fr = gr = \id_B$. In other words, $f$ and $g$ have a common right inverse. A coequaliser of a reflexive pair of morphisms is called a \uline{reflexive coequaliser}, and a category $\C$ is said to \uline{have reflexive coequalisers} if any reflexive pair of morphisms in $\C$ has a coequaliser.
+
+If a category $\C$ has all finite coproducts and all reflexive coequalisers, then $\C$ has all small colimits. One may repeat the proof of this fact with the word ``reflexive'' removed and observed the the induced pair of morphisms which we take a coequaliser out of actually form a reflexive pair.
+
+Given a reflexive pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$, then a morphism $B \xrightarrow{e} E$ is a coequaliser of $f$ and $g$ if and only if the diagram
+\[
+\begin{tikzcd}
+A \arrow[rr, "f"] \arrow[dd, "g"'] &  & B \arrow[dd, "e"] \\
+                                   &  &                   \\
+B \arrow[rr, "e"']                 &  & E                
+\end{tikzcd}
+\]
+is a pushout diagram. This is particularly interesting, because it implies that any category which has all pushouts also has all \textit{reflexive} coequalisers, despite (in general) not having all coequalisers.
+
+In any cartesian closed category $\C$, reflexive coequalisers commute with finite products in the following sense: if we have reflexive coequaliser diagrams
+\[
+\begin{tikzcd}
+A_1 \arrow[rr, "f_1", shift left=2] \arrow[rr, "g_1"', shift right=2] &  & B_1 \arrow[rr, "e_1"] &  & E_1 \\
+A_2 \arrow[rr, "f_2", shift left=2] \arrow[rr, "g_2"', shift right=2] &  & B_2 \arrow[rr, "e_2"] &  & E_2
+\end{tikzcd}
+\]
+in a cartesian closed category $\C$, then $B_1 \times B_2 \xrightarrow{e_1 \times e_2} E_1 \times E_2$ is the coequaliser of the parallel pair $A_1 \times A_2 \substack{\xrightarrow{f_1 \times f_2} \\ \xrightarrow[g_1 \times g_2]{}} B_1 \times B_2$. This is an instance of a slightly more general result: if we are given arbitrary categories $\C$ and $\D$ and a functor $F \colon \C \times \D \to \mathcal E$ such that all the functors in $\{F(A, -) \colon \D \to \mathcal E\}_{A \in \ob\C}$ and all the functors in $\{F(-, B) \colon \C \to \mathcal E\}_{B \in \ob\D}$ preserve reflexive coequalisers, then $F \colon \mathcal C \times \mathcal D \to \mathcal E$ also preserves reflexive coequalisers. Indeed, if we had reflexive coequaliser diagrams
+\[
+\begin{tikzcd}
+A_1 \arrow[rr, "f_1", shift left=2] \arrow[rr, "g_1"', shift right=2] &  & B_1 \arrow[rr, "e_1"] &  & E_1 \\
+A_2 \arrow[rr, "f_2", shift left=2] \arrow[rr, "g_2"', shift right=2] &  & B_2 \arrow[rr, "e_2"] &  & E_2
+\end{tikzcd}
+\]
+in $\C$ and $\D$ respectively, then all the rows and columns of the diagram
+\[
+\begin{tikzcd}
+{F(A_1,A_2)} \arrow[rr, "{F(f_1, \id_{A_2})}", shift left] \arrow[rr, "{F(g_1,\id_{A_2})}"', shift right] \arrow[dd, "{F(\id_{A_1},g_2)}", shift left] \arrow[dd, "{F(\id_{A_1},f_2)}"', shift right] &  & {F(B_1,A_2)} \arrow[rr, "{F(e_1,\id_{A_2})}"] \arrow[dd, "{F(\id_{B_1}, g_2)}", shift left] \arrow[dd, "{F(\id_{B_1},f_2)}"', shift right] &  & {F(E_1,A_2)} \arrow[dd, "{F(\id_{E_1}, g_2)}", shift left] \arrow[dd, "{F(\id_{E_1}, f_2)}"', shift right] \\ &  &  &  &   \\
+{F(A_1,B_2)} \arrow[dd, "{F(\id_{A_1}, e_2)}"'] \arrow[rr, "{F(f_1,\id_{B_2})}", shift left] \arrow[rr, "{F(g_1,\id_{B_1})}"', shift right]                                                           &  & {F(B_1,B_2)} \arrow[rr, "{F(e_2,\id_{B_2})}"] \arrow[dd, "{F(\id_{B_2}, e_2)}"']                                                           &  & {F(E_1,B_2)} \arrow[dd, "{F(\id_{E_1}, e_2)}"]                                                             \\ &  &  &  &  \\
+{F(A_1,E_2)} \arrow[rr, "{F(g_1,\id_{E_2})}"', shift right] \arrow[rr, "{F(f_1,\id_{E_2})}", shift left]                                                                                              &  & {F(B_1,E_2)} \arrow[rr, "{F(e_1,\id_{E_2})}"']                                                                                             &  & {F(E_1,E_2)}                                                                                              
+\end{tikzcd}
+\]
+in $\mathcal E$ are also reflexive coequaliser diagrams, by assumption. Observe that the morphisms $F(A_1,A_2) \substack{\xrightarrow{F(f_1,f_2)} \\ \xrightarrow[F(g_1,g_2)]{}} F(B_1,B_2)$ are diagonals of the upper left (serially commuting) square(s), and that the diagonal of the lower right (commuting) square is the morphism $F(B_1,B_2) \xrightarrow{F(e_1,e_2)} F(E_1,E_2)$. One can now show that the lower right square is in fact a pushout square by recalling that all coequalisers are epic. Now one can use the reflexivity to prove that in $F(B_1,B_2) \xrightarrow{F(e_1,e_2)} F(E_1,E_2)$ is the coequaliser of the pair $F(A_1,A_2) \substack{\xrightarrow{F(f_1,f_2)} \\ \xrightarrow[F(g_1,g_2)]{}} F(B_1,B_2)$. In particular, in the case where $\C = \D = \mathcal E$ and the category $\C$ is cartesian closed, then the functors $(-) \times B \colon \C \to \C$ and $A \times (-) \colon \C \to \C$ preserve reflexive (as they are functorial) coequalisers (as they are left adjoints). Thus the functor $F(A, B) \coloneqq A \times B$ preserves reflexive coequalisers, meaning that
+\[
+\begin{tikzcd}
+A_1 \times A_2 \arrow[rr, "f_1 \times f_2", shift left=2] \arrow[rr, "g_1 \times g_2"', shift right=2] &  & B_1 \times B_2 \arrow[rr, "e_1 \times e_2"] &  & E_1 \times E_2
+\end{tikzcd}
+\]
+will also be a reflexive coequaliser diagram in $\C$. Notably, this holds for $\C = \Set$. This is particularly interesting because, in general, (arbitrary) coequalisers do not commute with finite products in $\Set$ (notice that a coequaliser is the colimit of a diagram of shape $\begin{tikzcd}
+	\bullet & \bullet
+	\arrow[shift left, from=1-1, to=1-2]
+	\arrow[shift right, from=1-1, to=1-2]
+\end{tikzcd}$, which is \textit{not} a filtered category).
+
+Note that a reflexive coequaliser is precisely (a leg of) the colimit of a diagram of the shape\footnote{\textit{``Looks like a willy.''} --- Daniel Naylor, 2024, in the core of the Centre for Mathematical Sciences at the University of Cambridge.}
+\[
+\begin{tikzcd}
+A \arrow[r, "f", shift left=4] \arrow[r, "g"', shift left=2] \arrow["s"', loop, distance=2em, in=160, out=90] \arrow["t", loop, distance=2em, in=200, out=279] & B \arrow[l, "r", shift left=3]
+\end{tikzcd}
+\]
+where $f$, $g$, $r$, $s$, and $t$ are all non-identity morphisms such that $fr = gr = \id_B$, $rf = s$, and $rg = t$. Of course, this is just the \textit{shape} of the diagram; a reflexive pair $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ with common right inverse $r$ may (but need not) satisfy $rf = \id_A$ or $rg = \id_A$.
+
+Be careful to not confused the word ``reflexive'' in the phrase ``reflexive coequaliser'' with the word ``reflective'' in the phrase ``reflective subcategory''. Apologies if you have dyslexia.
+
+Now, given a pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$, a \uline{split coequaliser} of $f$ and $g$ consists of all the additional morphisms in the diagram below
+\[
+\begin{tikzcd}
+A \arrow[r, "f", shift left=2] \arrow[r, "g"', shift right=2] & B \arrow[l, "t", bend left=60] \arrow[r, "e"] & E \arrow[l, "s", bend left=60]
+\end{tikzcd}
+\]
+such that $ef = eg$, $es = \id_E$, $gt = \id_B$, and $ft = se$. Notice that this is \textit{not} symmetric in $f$ and $g$; they play different roles in the diagram above. However, $B \xrightarrow{e} E$ is still a coequaliser of $f$ and $g$. As split coequalisers are defined purely in terms of compositions and identities, \textit{any} functor preserves split coequalisers.
+
+Given a functor $\C \xrightarrow{F} \D$, we say that a parallel pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ in $\C$ is \uline{$F$-split} if $FA \substack{\xrightarrow{Ff} \\ \xrightarrow[Fg]{}} FB$ is part of a split coequaliser diagram in $\D$.
+
+Dually\footnote{For completeness, here are the full definitions. A pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ is \uline{coreflexive} if there is a morphism $A \xleftarrow{\ell} B$ such that $\ell f = \ell g = \id_A$. A \uline{coreflexive equaliser} is an equaliser of a coreflexive pair of morphisms. A \uline{split coequaliser diagram} of a pair of morphisms $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ is a diagram $E \substack{\xrightarrow{e} \\ \xleftarrow[s]{}} A \substack{\xrightarrow{f} \\ \xrightarrow{g} \\ \xleftarrow[t]{}} B$ such that $fe = ge$, $se = \id_E$, $tg = \id_A$, and $tf = es$.}, we have the notions of \uline{coreflexive equalisers} and \uline{split equalisers} (as well as the dual notion of an $F$-split pair but I cannot think of a name for that).
+
+
+
+\subsection{It’s Crazy That Monads Are Actually Useful in Real Life}
+
+Suppose we have an adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ which induces a monad $\mathbb T$ on a category $\C$. Is the Kleisli comparison functors $H \colon \C_{\mathbb T} \to \D$ an equivalence of categories? Well, recall that $H$ is full and faithful. So $H$ is an equivalence of categories if and only if $H$ is essentially surjective. But recall that $\ob\C_\mathbb T = \ob\C$ and that we defined $H$ to agree with $F$ on objects. So $H$ is an equivalence if and only if $F$ is essentially surjective.
+
+Is the Eilenberg-Moore comparison functor $K \colon \D \to \C^{\mathbb T}$ an equivalence of categories? This is a lot harder to answer. So hard, in fact, that we introduce a new definition precisely when this is the case.
+
+\begin{definition*}
+Fix an adjunction $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$, and let $\mathbb T$ be the monad induced by this adjunction. The adjunction $F \dashv G$ is said to be \uline{monadic} if the Eilenberg-Moore comparison functor $K \colon \D \to \C^{\mathbb T}$ is part of an equivalence of categories between $\D$ and $\C^{\mathbb T}$.
+\end{definition*}
+
+We often simply say a functor $\C \xleftarrow[G]{} \D$ is \uline{monadic} if $G$ occurs as a right adjoint and the adjunction is monadic. If $\C \xleftarrow[G]{} \D$ is a monadic functor, then $G$ creates all limits which exist in $\C$, because the forgetful functor $\C \xleftarrow[G^{\mathbb T}]{} \C^{\mathbb T}$ creates all limits which exist in $\C$, and equivalence functors preserve limits (because they are, in particular, right adjoints). Similarly, a monadic functor $\C \xleftarrow[G]{} \D$ creates all colimits which both exist in $\C$ and are preserved by the underlying functor $T \colon \C \to \C$ of the induced monad $\mathbb T$.
+
+Dually\footnote{For completeness, here is the full definition. For functors $\C \substack{\xrightarrow{F} \\ \xleftarrow[G]{}} \D$ with $F \dashv G$, we say that the adjunction $F \dashv G$ is \uline{comonadic} if the co-Eilenberg-Moore comparison functor from $\C$ to the co-Eilenberg-Moore category of coalgebras is an equivalence. We then say that a functor $F$ is \uline{comonadic} if it is a left adjoint and the adjunction is comonadic.}, we have the notion of an adjunction or a functor being \uline{comonadic}.
+
+The main question is now reworded as ``When is a functor monadic?'' This is answered in the form of the monadicity theorems. At the heart of all of them is the following lemma: under certain conditions, the Eilenberg-Moore comparison functor can occur as a right adjoint!
+
+\begin{lemma*}
+	Let $\begin{tikzcd}
+	\C & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["F", shift left=2, from=1-1, to=1-2]
+	\arrow["G", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ be an adjunction inducing a monad $\mathbb T = (T, \eta, \mu)$ on a category $\C$. Let $\varepsilon \colon FG \to \id_\D$ be the counit of the adjunction $F \dashv G$. Suppose that, for all $\mathbb T$-algebras $(A, \alpha) \in \ob\C^{\mathbb T}$, the pair of morphisms
+\[
+\begin{tikzcd}
+FGFA \arrow[rr, "F\alpha", shift left=2] \arrow[rr, "\varepsilon_{FA}"', shift right=2] &  & FA
+\end{tikzcd}
+\]
+in $\D$ has a coequaliser. Then the Eilenberg-Moore comparison functor $\C^{\mathbb T} \xleftarrow[K]{} \D$ has a left adjoint $\C^{\mathbb T} \xrightarrow{L} \D$.
+\end{lemma*}
+\begin{proof}
+	The forward direction is simply because $G^{\mathbb T}K = G$, giving $LF^{\mathbb T} \cong F$ in $[\C,\D]$, and because left adjoints preserve coequalisers.
+	
+	Define $L \colon \C^{\mathbb T} \to \D$ as follows:
+	\begin{itemize}
+		\item for $(A, \alpha) \in \ob\C^{\mathbb T}$, take the coequaliser
+			\[
+\begin{tikzcd}
+FGFA \arrow[rr, "F\alpha", shift left=2] \arrow[rr, "\varepsilon_{FA}"', shift right=2] &  & FA \arrow[rr, "{\lambda_{(A,\alpha)}}"] &  & {L(A,\alpha)}
+\end{tikzcd}
+			\]
+			in $\D$, and let $L(A,\alpha)$ be the codomain of this equaliser;
+		\item for $\big((A,\alpha) \xrightarrow{f} (B,\beta)\big) \in \mor \C^{\mathbb T}$, we have the commuting diagram
+			\[
+\begin{tikzcd}
+FGFA \arrow[rr, "F\alpha", shift left=2] \arrow[rr, "\varepsilon_{FA}"', shift right=2] \arrow[dd, "FGFf"'] &  & FA \arrow[rr, "{\lambda_{(A,\alpha)}}"] \arrow[dd, "Ff"] &  & {L(A,\alpha)} \arrow[dd, "\exists!", dashed] \\ & &  &  \\ FGFB \arrow[rr, "F\beta", shift left=2] \arrow[rr, "\varepsilon_{FB}"', shift right=2]  &  & FB \arrow[rr, "{\lambda_{(B,\beta)}}"'] &  & {L(B,\beta)}                                
+\end{tikzcd}
+			\]
+			in $\D$, and we let $Lf$ be the unique morphism induced above.
+	\end{itemize}
+	Then the following string of natural bijections, for $(A,\alpha) \in \ob\C^{\mathbb T}$ and $B \in \ob\D$,
+\newline \newline
+\adjustbox{scale=0.85,left}{
+\begin{tikzcd}
+{{\{f \in \hom_\C(A, GB) : f\alpha = (G\varepsilon_B)(GFf)\}}} \arrow[dd, "\cong", "{{\text{definition of } K}}"'] &  & {{\{g \in \hom_\D(FA,B) : g(F\alpha) = g\varepsilon_{FA}\}}} \arrow[ll, "\cong", "{F \dashv G}"']           \\
+                                     &  &                                               \\
+{\hom_\C(A, KB)}                     &  & {\hom_\D(L(A,\alpha), B)} \arrow[uu, "\cong", "{\text{universal property of ccoequalisers}}"']
+\end{tikzcd}
+}
+\newline \newline
+establish the adjunction $L \dashv K$.
+\end{proof}
+
+Observe that the pair of morphisms $\begin{tikzcd}
+FGFA \arrow[rr, "F\alpha", shift left=2] \arrow[rr, "\varepsilon_{FA}"', shift right=2] &  & FA
+\end{tikzcd}$ in the statement of the lemma above is actually both reflexive and $G$-split. Indeed, they have $FGFA \xleftarrow{F\alpha_A} FA$ as a common right inverse, and we have a split coequaliser diagram
+\[
+\begin{tikzcd}
+GFGFA \arrow[rr, "GF\alpha", shift left=2] \arrow[rr, "G\varepsilon_{FA} = \mu_A"', shift right=2] &  & GFA \arrow[rr, "\alpha"] \arrow[ll, "\eta_{GFA}", bend left=60] &  & A \arrow[ll, "\eta_A", bend left=60]
+\end{tikzcd}
+\]
+in $\C$.
+
+
+\begin{theorem*}[Beck's Monadicity Theorem / The Precise Monadicity Theorem]
+	Let $\C \xleftarrow[G]{} \D$ be a functor. Then $G$ is monadic if and only if both of the following hold:
+	\begin{itemize}
+		\item $G$ is a right adjoint;
+		\item $G$ creates coequalisers of $G$-split pairs in $\D$.
+	\end{itemize}
+\end{theorem*}
+\begin{proof}
+	For the forward direction, by definition, $G$ occurs as the right adjoint in some adjunction $F \dashv G$ and induces a monad $\mathbb T$ on $\C$. Now given a $G$-split pair in $\D$, use the Eilenberg-Moore comparison functor $\D \xrightarrow{K} \C^{\mathbb T}$ to map this pair to a $G^{\mathbb T}$-split pair in $\C^{\mathbb T}$. If we have a coequaliser for this $G^{\mathbb T}$-split pair in $\C^{\mathbb T}$, then the Eilenberg-Moore comparison functor (which an an equivalence, by assumption!) creates a coequaliser for the original $G$-split pair in $\D$, because equivalence of categories create all limits and colimits.
+	
+	Now if $(A,\alpha) \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} (B,\beta)$ in $\C^{\mathbb T}$ is a $G^{\mathbb T}$-split pair of morphisms, then (recalling that $G^{\mathbb T}$ is the forgetful functor) we have the split coequaliser diagram
+\[
+\begin{tikzcd}
+A \arrow[r, "f", shift left=2] \arrow[r, "g"', shift right=2] & B \arrow[l, "t", bend left=60] \arrow[r, "e"] & E \arrow[l, "s", bend left=60]
+\end{tikzcd}
+\]
+	in $\C$. Now, split coequaliser diagrams are preserved by \textit{any} functor. In particular, they are preserved by the functors $T \coloneqq GF$ and $TT$.
+\[
+\begin{tikzcd}
+TA \arrow[dd, "\alpha"'] \arrow[r, "Tf", shift left=2] \arrow[r, "Tg"', shift right=2] & TB \arrow[dd, "\beta"] \arrow[r, "Te"] \arrow[l, "Tt", bend left=60] & TE \arrow[l, "Ts", bend left=60] \\
+                                                                                       &                                                                      &                                  \\
+A \arrow[r, "f", shift left=2] \arrow[r, "g"', shift right=2]                          & B \arrow[l, "t", bend left=60] \arrow[r, "e"]                        & E \arrow[l, "s", bend left=60]  
+\end{tikzcd}
+\]
+Then the morphism $(B,\beta) \xrightarrow{e} (E, e\beta(Ts))$ in $\C^{\mathbb T}$ is a coequaliser of the pair $(A,\alpha) \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} (B,\beta)$.
+
+Now we prove the converse. The hypotheses of the converse give an adjunction $F \dashv G$, with counit $\varepsilon \colon FG \to \id_\D$ and inducing a monad $\mathbb T$ on $\C$. The conditions of the previous lemma on this adjunction are satisfied. So we have an adjunction $\begin{tikzcd}
+	\C^{\mathbb T} & \D
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["L", shift left=2, from=1-1, to=1-2]
+	\arrow["K", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$, where $K$ is the Eilenberg-Moore comparison functor. This adjunction comes with unit $\tilde \eta \colon \id_{\C^{\mathbb T}} \to KL$ and counit $\tilde \varepsilon \colon LK \to \id_\D$. We will prove that both $\tilde \eta$ and $\tilde \varepsilon$ are natural isomorphisms, establishing that $K$ is an equivalence.
+
+Consider an object $(A,\alpha) \in \ob\C^{\mathbb T}$. What is the unit morphism $(A,\alpha) \xrightarrow{\tilde\eta_{(A,\alpha)}} KL(A,\alpha)$? Well, recall that $L(A,\alpha)$ is defined to be the codomain of the following coequaliser diagram:
+			\[
+\begin{tikzcd}
+FGFA \arrow[rr, "F\alpha", shift left=2] \arrow[rr, "\varepsilon_{FA}"', shift right=2] &  & FA \arrow[rr, "{\lambda_{(A,\alpha)}}"] &  & {L(A,\alpha)}
+\end{tikzcd}
+			\]
+	Also, recall that $KB \coloneqq (GB, G\varepsilon_B)$ for all $B \in \ob\D$. Finally, recall that a morphism in $\C^{\mathbb T}$ is just a morphism in $\C$ making a certain square commute. So this unit morphism $(A,\alpha) \xrightarrow{\tilde\eta_{(A,\alpha)}} KL(A,\alpha)$ lives in the following diagram
+	\[
+\begin{tikzcd}
+GFGFA \arrow[rr, "GF\alpha", shift left=2] \arrow[rr, "G\varepsilon_{FA}"', shift right=2] &  & GFA \arrow[rr, "{G\lambda_{(A,\alpha)}}"] \arrow[rd, "\alpha"'] & & {GL(A,\alpha)} \\ &  & & A \arrow[ru, "{\tilde\eta_{(A,\alpha)}}"']&               
+\end{tikzcd}
+	\]
+	in $\C$. Now, $\alpha$ is a (split) coequaliser of $GFGFA \substack{\xrightarrow{ GF\alpha \ } \\ \xrightarrow[G\varepsilon_{FA}]{}} GFA$ by definition of $(A,\alpha)$ being a $\mathbb T$-algebra. But also, by assumption, $G\lambda_{(A,\alpha)}$ is also a coequaliser since $G$ creates (and hence preserves) coequalisers of $G$-split pairs in $\D$. Consequently, $\tilde \eta_{(A,\alpha)}$ is the factorisation obtained from the universal property of coequalisers, and must thus be an isomorphism.
+
+	Similarly, for $B \in \ob\D$, stare at the diagram
+	\[
+\begin{tikzcd}
+FGFGB \arrow[rr, "FG\varepsilon_B", shift left=2] \arrow[rr, "\varepsilon_{FGB}"', shift right=2] &  & FGB \arrow[rr, "{\lambda_{(GB,G\varepsilon_B)}}"] \arrow[rd, "\varepsilon_B"'] &   & {L(GB,G\varepsilon_B)} \arrow[ld, "\tilde \varepsilon_B"] \\& &                                                                              & B &                                                          
+\end{tikzcd}
+	\]
+	in $\D$ and conclude that $LKB \xrightarrow{\tilde \varepsilon_B} B$ is an isomorphism.
+\end{proof}
+
+
+There are several variants of Beck's monadicity theorem. One instance of these is the following ``crude'' version, with a very similar proof to Beck's precise monadicity theorem.
+
+\begin{theorem*}[The Crude Monadicity Theorem]
+	Let $\C \xleftarrow[G]{} \D$ be a functor. Suppose $\D$ has reflexive coequalisers. Suppose further that all of the following hold:
+	\begin{itemize}
+		\item $G$ is a right adjoint;
+		\item $G$ preserves reflexive coequalisers;
+		\item $G$ reflects isomorphisms.
+	\end{itemize}
+	Then $G$ is monadic.
+\end{theorem*}
+
+
+
+
+
+
+
+\subsection{... for Some Contrived Definition of ``Real Life''}
+
+A \uline{finitary algebraic category} is a category whose objects and morphisms are sets and functions equipped with finitary operations satisfying certain equations. Slightly more explicitly, a \uline{finitary algebraic theory} is a single-sorted theory, with signature consisting of function symbols of finite arity, subject to universally quantified equational axioms. For instance, the category $\mathbf{Grp}$ of groups and group homomorphisms, the category $\mathbf{Ab}$ of abelian groups and group homomorphisms, the category $\mathbf{Rng}$ of rings and ring homomorphisms, the category $\mathbf{Vect}_k$ of vector spaces over a field $k$ and linear transformations, the category $\mathbf{Lat}$ of lattices and lattice homomorphisms, etc. are all examples of finitary algebraic categories.
+
+On any finitary algebraic category $\mathcal A$, we can define the \uline{forgetful functor} $U \colon \mathcal A \to \Set$ by simply forgetting the algebraic structure on the objects in $\mathcal A$ and simply returning the underlying set, and by similarly returning the underlying functions associated to morphisms in $\mathcal A$. We can often use the crude monadicity theorem to prove that the forgetful functor $\Set \xleftarrow[U]{} \mathcal A$ is monadic, by arguing as follows.
+\begin{itemize}
+	\item The forgetful functor $\Set \xleftarrow[U]{} \mathcal A$ has a left adjoint functor $\Set \xrightarrow{F} \mathcal A$, typically by making the ``free $\mathcal A$-structure'' from s set, or by using the adjoint functor theorems.
+	\item The forgetful functor $U$ reflects isomorphisms, as an isomorphism in $\mathcal A$ is typically defined to be morphism in $\mathcal A$ whose underlying function is bijective.
+	\item The forgetful functor $U$ creates (and hence preserves) reflexive coequalisers. Indeed, if $A \substack{\xrightarrow{f} \\ \xrightarrow[g]{}} B$ is a reflexive pair of morphisms in $\mathcal A$, then $UA \substack{\xrightarrow{Uf} \\ \xrightarrow[Ug]{}} UB$ is also a reflexive pair in $\Set$. So if $UB \xrightarrow{e} E$ is the coequaliser of $UA \substack{\xrightarrow{Uf} \\ \xrightarrow[Ug]{}} UB$ in $\Set$, then $UB \times UB \xrightarrow{e \times e} E \times E$ is the coequaliser of $UA \times UA \substack{\xrightarrow{Uf \times Uf} \\ \xrightarrow[Ug \times Ug]{}} UB \times UB$, because $\Set$ is a cartesian closed category. Hence we have a unique induced function $E \times E \to E$ in $\Set$
+		\[
+\begin{tikzcd}
+UA \times UA \arrow[rr, "Uf \times Uf", shift left=2] \arrow[rr, "Ug \times Ug"', shift right=2] &  & UB \times UB \arrow[rr, "e \times e"] \arrow[dd, "\text{multiplication in } \mathcal A"'] &  & E \times E \arrow[dd, "\exists !", dashed] \\ &  &&  & \\
+ &  & UB \arrow[rr, "e"] &  & E                                         
+\end{tikzcd}
+		\]
+		which is a binary operation on $E$. And we can do this for all $n$-ary operations needed to make an $\mathcal A$-structure. So we have turned $E$ into an $\mathcal A$-structure $\tilde E$ which turns the function $UB \xrightarrow{e} E$ into an $\mathcal A$-morphism $B \xrightarrow{e} \tilde E$ which also happens to be a coequaliser in $\mathcal A$.
+\end{itemize}
+In particular, the forgetful functor $\Set \xleftarrow[U]{} \mathcal A$ creates all limits! Also, all the colimits $U$ creates coincides with the colimits which are preserved by the underlying functor $T \colon \Set \to \Set$ of the induced monad $\mathbb T$. Now, $U$ creates filtered colimits. So $T$ preserves filtered colimits, using a similar argument as to $U$ creating reflexive coequalisers. Thus, in any finitary algebraic category $\mathcal A$, filtered colimits commute with finite limits because the forgetful functor $\Set \xleftarrow[U]{} \mathcal A$ reflects isomorphisms.
+
+In the case where we have an algebraic structure with \textit{infinitary} operations, for example in the category $\mathbf{CLat}$ of complete lattices and lattice homomorphisms, we can still use Beck's (precise) monadicity theorem to show that the relevant forgetful functors are monadic (if it indeed does have a left adjoint).
+
+Now let $\omega$ be the full subcategory of $\Set$ where $\ob\omega$ is precisely the set of finite ordinals. This is a skeleton of the category of finite sets. The choice of ordinals isn't important; any skeleton of the category of finite sets will work, but we may as well stick with a concrete one.
+
+\begin{definition*}
+	A \uline{Lawvere theory} is a pair $(\mathcal T, [-])$ where $\mathcal T$ is a small category which has all finite coproducts and $[-] \colon \mathbb \omega \to \mathcal T$ is a functor which is bijective on objects and preserves all finite coproducts.
+\end{definition*}
+
+This definition has been categorified beyond all comprehension. But it simply says that the objects of $\mathcal T$ can be thought of as the set $\{[0], [1], [2], [3], \dots\}$ such that
+\[
+	[n + k] \cong [n] + [k] \qquad \text{in }\mathcal T
+\]
+for all $n,k \in \ob\omega$.
+
+\begin{definition*}
+	Let $\C$ be a category with finite products and let $\mathcal T$ be a Lawvere theory. A \uline{model of $\mathcal T$ in $\C$} is a functor $M \colon \mathcal T^\op \to \C$ which preserves finite products. The category $\mathcal T\text{-}\mathbf{Mod}(\C)$ is the full subcategory of $[\mathcal T^\op, \C]$ such that $\ob \big(\mathcal T\text{-}\mathbf{Mod}(\C)\big)$ is the collection of all models of $\mathcal T$ in $\C$.
+\end{definition*}
+
+Good heavens. Another definition categorified beyond all comprehension. Perhaps we should actually do an example this time to drive the intuition.
+
+\begin{example*}
+	Let $(\mathcal T_{\mathsf{Grp}}, F)$ be the \uline{Lawvere theory of groups}: the functor $F \colon \omega \to \mathcal T_{\mathsf{Grp}}$ is the restriction of the free group functor $\Set \to \mathbf{Grp}$ to $\omega$. In particular, $\mathcal T_{\mathsf{Grp}}$ is the full subcategory of $\mathbf{Grp}$ whose objects are free groups with a finite ordinal as their generating set. For example, $F(0)$ is isomorphic to the trivial group and $F(1)\cong \Z$ in $\mathbf{Grp}$.
+	
+	Given any $G \in \ob\mathbf{Grp}$, the functor $\hom_{\mathbf{Grp}}(-, G) \colon \mathcal T_{\mathsf{Grp}}^\op \to \Set$ is a model of $\mathcal T_{\mathsf{Grp}}$ in $\Set$. For $(G \xrightarrow{f} H) \in \mor \mathbf{Grp}$, we can associate to this group homomorphism a natural transformation $\hom_{\mathbf{Grp}}(-,G) \to \hom_{\mathbf{Grp}}(-, H)$ defined by
+	\[
+\begin{tikzcd}
+{\hom_{\mathbf{Grp}}(K,G)} \arrow[rr] &  & {\hom_{\mathbf{Grp}}(K,H)} \\
+g \arrow[rr, maps to]                 &  & f \circ g                 
+\end{tikzcd}
+	\]
+	for all $K \in \ob\mathcal T_{\mathsf{Grp}}^\op$. This assignment $\mathbf{Grp} \to \mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set)$ is functorial; any group can be turned into a model of $\mathcal T_{\mathsf{Grp}}$ in $\Set$.
+	
+	Conversely, suppose $M \colon \mathcal T_{\mathsf{Grp}}^\op \to \Set$ is a model of $\mathcal T_{\mathsf{Grp}}$ in $\Set$. Letting $G \coloneqq MF(1)$, we can define a binary operation $\star \colon G \times G \to G$ by
+	\[
+\begin{tikzcd}
+G \times G \arrow[r, "="]      & MF(1) \times MF(1) \arrow[r, "\cong"] & MF(2) \arrow[rr, "{M\mu}"] &  & MF(1) \arrow[r, "="] & G   \\
+{(x,y)} \arrow[rrrrr, maps to] &                                           &                                    &  &                        & x \star y
+\end{tikzcd}
+	\]
+	where $\mu \in \hom_{\mathcal T_{\mathsf{Grp}}}(F(1),F(2))$ is the unique group homomorphism satisfying $\mu(a) = bc$ (that is, the \textit{word} $bc$), where $\{a\}$ is the generating set for $F(1)$, and $\{b,c\}$ is the generating set for $F(2)$. Then if we additionally define the following four group homomorphisms in $\mathcal T_{\mathsf{Grp}}$:
+	\begin{itemize}
+		\item denote $F(1) \xrightarrow{\eta} F(0)$ and $F(0) \xrightarrow{e} F(1)$, noting $F(0)$ is both an initial object and a terminal object in $\mathbf{Grp}$;
+		\item define $F(1) \xrightarrow{i} F(1)$ by $i(a) \coloneqq a^{-1}$;
+		\item define $F(2) \xrightarrow{\Delta} F(1)$ by $\Delta(b) \coloneqq \Delta(c) \coloneqq a$;
+	\end{itemize}
+	we get the following five commutative diagrams
+\[
+\begin{tikzcd}
+                          &                                   & F(3)                                               &  & F(2) \arrow[ll, "\mu+\id_{F(1)}"']        &                                   &                                                    \\
+                          &                                   &                                                    &  &                                           &                                   &                                                    \\
+                          &                                   & F(2) \arrow[uu, "\id_{F(1)} + \mu"]                &  & F(1) \arrow[ll, "\mu"] \arrow[uu, "\mu"'] &                                   &                                                    \\
+F(1)                      &                                   & F(2) \arrow[ll, "\eta + \id_{F(1)}"']              &  & F(1)                                      &                                   & F(2) \arrow[ll, "\id_{F(1)} + \eta"']              \\
+                          &                                   &                                                    &  &                                           &                                   &                                                    \\
+                          &                                   & F(1) \arrow[lluu, "\id_{F(1)}"] \arrow[uu, "\mu"'] &  &                                           &                                   & F(1) \arrow[lluu, "\id_{F(1)}"] \arrow[uu, "\mu"'] \\
+                          & F(1)                              &                                                    &  &                                           & F(1)                              &                                                    \\
+F(2) \arrow[ru, "\Delta"] &                                   & F(0) \arrow[lu, "e"']                              &  & F(2) \arrow[ru, "\Delta"]                 &                                   & F(0) \arrow[lu, "e"']                              \\
+                          & F(2) \arrow[lu, "i + \id_{F(1)}"] & F(1) \arrow[u, "\eta"'] \arrow[l, "\mu"]           &  &                                           & F(2) \arrow[lu, "\id_{F(1)} + i"] & F(1) \arrow[l, "\mu"] \arrow[u, "\eta"']          
+\end{tikzcd}
+\]
+	in $\mathcal T_{\mathsf{Grp}}$. Consequently, $(G, \star)$ is a group. For example, the first diagram above yields the following commutative diagram
+	\[
+\begin{tikzcd}
+G \times G \times G \arrow[r, "\cong"] & MF(3) \arrow[rr, "M\mu + \id_{MF(1)}"] \arrow[dd, "\id_{MF(1)} + M\mu"'] &  & MF(2) \arrow[dd, "M\mu"] \arrow[r, "\cong"] & G \times G \\
+                                       &                                                                          &  &                                             &            \\
+G \times G                             & MF(2) \arrow[rr, "M\mu"'] \arrow[l, "\cong"]                             &  & MF(1) \arrow[r, "="']                   & G         
+\end{tikzcd}
+	\]
+	in $\Set$, which establishes the associativity law for $(G, \star)$. We can also assign a natural transformation $(M \xrightarrow{\alpha} N) \in \mor\big(\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set)\big)$ to the group homomorphism
+		\[
+\begin{tikzcd}
+{MF(1)} \arrow[rr, "\alpha_{F(1)}"] &  & {NF(1)} \\
+x \arrow[rr, maps to]                 &  & {\alpha_{F(1)}(x)}                 
+\end{tikzcd}
+	\]
+	where $MF(1)$ and $NF(1)$ are given the group structures described above. So we have a functor $\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set) \to \mathbf{Grp}$.
+	
+	These two functors establish an equivalence between the category $\mathbf{Grp}$ and the category $\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set)$. The takeaway mantra from this example is ``A $\Set$-group is a group''. \qed
+\end{example*}
+
+If $F_{\text{free}} \colon \Set \to \mathbf{Grp}$ is the free group functor and $U \colon \mathbf{Grp} \to \Set$ is the forgetful functor, then we have an adjunction $\begin{tikzcd}
+	\Set & \mathbf{Grp}
+	\arrow["\bot"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["{F_{\text{free}}}", shift left=2, from=1-1, to=1-2]
+	\arrow["U", shift left=2, from=1-2, to=1-1]
+\end{tikzcd}$ which induces a monad $\mathbb T_{\mathsf{Grp}}$ on $\Set$. Then, in addition to the equivalence $\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set) \simeq \mathbf{Grp}$ above, we also have
+\[
+	\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\Set) \simeq \mathbf{Grp} \simeq \Set^{\mathbb T_{\mathsf{Grp}}}\,.
+\]
+
+And this holds for any finitary algebraic theory! First, a quick defininition. A \uline{finitary monad} is a monad $\mathbb T = (T,\eta,\mu)$ on $\Set$ such that the underlying functor $T \colon \Set \to \Set$ preserves filtered colimits. Then we have the following characterisation of finitary algebraic categories.
+
+\begin{theorem*}
+	If $\mathcal A$ finitary algebraic category, then $\mathcal A$ is equivalent to $\Set^{\mathbb T}$ for some finitary monad $\mathbb T$.
+\end{theorem*}
+
+
+\begin{theorem*}
+	If $\mathbb T$ is a finitary monad on $\Set$, then $\Set^{\mathbb T}$ is equivalent to $\mathcal T\text{-}\mathbf{Mod}(\Set)$ for some Lawvere theory $\mathcal T$.
+\end{theorem*}
+
+
+\begin{theorem*}
+	If $\mathcal T$ is a Lawvere theory, then $\mathcal T\text{-}\mathbf{Mod}(\Set)$ is equivalent to some finitary algebraic category $\mathcal A$.
+\end{theorem*}
+
+We won't prove these theorems because I'm lazy. Let's just do a couple examples to see how we have generalised finitary algebraic theories.
+
+\begin{example*}
+	Consider again the Lawvere theory of groups $(\mathcal T_{\mathsf{Grp}}, F)$. Then
+	\[
+		\mathcal T_{\mathsf{Grp}}\text{-}\mathbf{Mod}(\mathbf{Top}) \simeq \mathbf{TopGrp}\,,
+	\]
+	where $\mathbf{Top}$ is the category of topological spaces and continuous functions, and $\mathbf{TopGrp}$ is the category of topological groups and continuous group homomorphisms. So we have the tautological-sounding phrase ``A $\mathbf{Top}$-group is a topological group''. \qed
+\end{example*}
+
+\begin{example*}
+	Consider again the Lawvere theory of groups $(\mathcal T_{\mathsf{Grp}}, F)$. Then
+	\[
+		\mathcal{T_{\mathsf{Grp}}}\text{-}\mathbf{Mod}(\mathbf{Grp}) \simeq \mathbf{Ab}\,,
+	\]
+	where $\mathbf{Ab}$ is the category of abelian groups and group homomorphisms. To (partially) see this, let $M \colon \mathcal T_{\mathsf{Grp}}^\op \to \mathbf{Grp}$ be a model of $\mathcal T_{\mathsf{Grp}}$ in $\mathbf{Grp}$, and let $(G,*) \coloneqq MF(1)$. Defining the group homomorphism $i \colon F(1) \to F(1)$ by $i(a) \coloneqq a^{-1}$, where $\{a\}$ is the generating set of $F(1)$, we then see that $(Mi)(x) = x^{-1}$ for all $x \in G$. But $M(i)$ is also a group homomorphism, so $(x*y)^{-1} = x^{-1} * y^{-1}$ for all $x,y \in G$.
+	
+	
+	You can now haunt your friends with the phrase ``A $\mathbf{Grp}$-group is an abelian group''. \qed
+\end{example*}
+
+
+
+
+
+
+\clearpage \newpage
+\renewcommand \refname{Bibliography}
+\bibliography{skeleton-cats.bib}
+\addcontentsline{toc}{section}{Bibliography}
+\bibliographystyle{plain}
+\nocite{*}
+
+
+\end{document}
